@@ -5,7 +5,7 @@ spring:
 
   datasource:
     hikari:
-      jdbc-url: jdbc:mysql://${LOCAL_DATABASE_URL}/my-chat
+      jdbc-url: jdbc:mysql://${LOCAL_DATABASE_URL}/blog
       username: ${LOCAL_DATABASE_USERNAME}
       password: ${LOCAL_DATABASE_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -46,7 +46,7 @@ spring:
 
   datasource:
     hikari:
-      jdbc-url: jdbc:mysql://${PROD_DATABASE_URL}/my-chat
+      jdbc-url: jdbc:mysql://${PROD_DATABASE_URL}/blog
       username: ${PROD_DATABASE_USERNAME}
       password: ${PROD_DATABASE_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver

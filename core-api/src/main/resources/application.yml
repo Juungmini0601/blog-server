@@ -1,0 +1,29 @@
+spring.application.name: blog-api
+spring.profiles.active: local
+
+spring:
+  config:
+    import:
+      - logging.yml
+      - monitoring.yml
+      - database.yml
+      - redis.yml
+
+  web.resources.add-mappings: false
+
+server:
+  tomcat:
+    max-connections: 20000
+    threads:
+      max: 600
+      min-spare: 100
+
+---
+spring.config.activate.on-profile: local
+
+---
+spring.config.activate.on-profile: test
+
+---
+spring.config.activate.on-profile: prod
+
