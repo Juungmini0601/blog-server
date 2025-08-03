@@ -1,6 +1,6 @@
 ### Project Ignore
 *.env
-docker/data
+docker/**/volume/
 
 ###
 .gradle
@@ -10,6 +10,7 @@ build/
 !**/src/test/**/build/
 
 ### IntelliJ IDEA ###
+.idea
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
