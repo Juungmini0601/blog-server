@@ -1,0 +1,13 @@
+bootJar.enabled = true
+jar.enabled = false
+
+dependencies {
+    api project(':core-storage:database')
+    implementation project(':core-storage:redis')
+    implementation project(':core-support:monitoring')
+    implementation project(':core-support:logging')
+
+    // Spring MVC
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+}
