@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS `users`
     `github_url`        VARCHAR(255),
     `introduction`      VARCHAR(100),
     `created_at`        DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`        DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    `updated_at`        DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY `email` (`email`)
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `oauths`
@@ -103,7 +104,7 @@ CREATE TABLE series
 
 CREATE TABLE comments
 (
-    `comments_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `comment_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
     `post_id`     BIGINT NOT NULL,
     `user_id`     BIGINT NOT NULL,
     `parent_id`   BIGINT,
