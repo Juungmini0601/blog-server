@@ -1,0 +1,66 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://${LOCAL_DATABASE_URL}/my-chat
+      username: ${LOCAL_DATABASE_USERNAME}
+      password: ${LOCAL_DATABASE_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      pool-name: MyChatConnectionPool
+      minimum-idle: 10 # 최소 커넥션
+      maximum-pool-size: 50 # 최대 커넥션
+      idle-timeout: 60000
+      connection-timeout: 30000
+
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  datasource:
+    url:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://${PROD_DATABASE_URL}/my-chat
+      username: ${PROD_DATABASE_USERNAME}
+      password: ${PROD_DATABASE_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      pool-name: MyChatConnectionPool
+      minimum-idle: 10 # 최소 커넥션
+      maximum-pool-size: 50 # 최대 커넥션
+      idle-timeout: 60000
+      connection-timeout: 30000
+
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true

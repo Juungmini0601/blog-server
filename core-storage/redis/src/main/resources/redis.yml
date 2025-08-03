@@ -1,0 +1,31 @@
+spring.config.activate.on-profile: local
+
+spring:
+  data:
+    redis:
+      host: ${LOCAL_REDIS_HOST}
+      port: ${LOCAL_REDIS_PORT}
+      password: ${LOCAL_REDIS_PASSWORD}
+      timeout: 3000
+
+---
+spring.config.activate.on-profile: test
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: qwer1234
+      timeout: 3000
+
+---
+spring.config.activate.on-profile: prod
+
+spring:
+  data:
+    redis:
+      host: ${PROD_REDIS_HOST}
+      port: ${PROD_REDIS_PORT}
+      password: ${PROD_REDIS_PASSWORD}
+      timeout: 3000
