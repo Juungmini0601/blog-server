@@ -1,0 +1,9 @@
+# 로그인
+POST http://{{host}}/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "jungmini0601@gmail.com",
+  "password": "qwer1234"
+}
+###
