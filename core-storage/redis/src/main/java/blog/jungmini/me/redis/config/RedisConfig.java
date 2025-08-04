@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
-@EnableRedisHttpSession(redisNamespace = "my-chat", maxInactiveIntervalInSeconds = 300, flushMode = FlushMode.IMMEDIATE)
+@EnableRedisHttpSession(redisNamespace = "my-blog", maxInactiveIntervalInSeconds = 300, flushMode = FlushMode.IMMEDIATE)
 public class RedisConfig {
     private final String host;
 
