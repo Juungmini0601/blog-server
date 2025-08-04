@@ -23,7 +23,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import blog.jungmini.me.common.error.ErrorType;
 import blog.jungmini.me.common.response.ApiResponse;
 import blog.jungmini.me.dto.request.LoginRequest;
-import blog.jungmini.me.dto.response.LoginResponse;
 import blog.jungmini.me.security.model.CustomUserDetails;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,13 +62,11 @@ public class RestApiLoginAuthenticationFilter extends AbstractAuthenticationProc
 
         String sessionId = request.getSession().getId();
         String encodedSessionId = Base64.getEncoder().encodeToString(sessionId.getBytes(StandardCharsets.UTF_8));
-
-        LoginResponse loginResponse = new LoginResponse(encodedSessionId);
-
+        // Test시 편하게 하기 위해서 JSON 말고 PLAIN VALUE
         response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setContentType(MediaType.TEXT_PLAIN_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.getWriter().write(objectMapper.writeValueAsString(ApiResponse.success(loginResponse)));
+        response.getWriter().write(encodedSessionId);
         response.getWriter().flush();
     }
 
