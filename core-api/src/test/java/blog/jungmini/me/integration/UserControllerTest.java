@@ -13,10 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import blog.jungmini.me.AbstractTestContainerTest;
 import blog.jungmini.me.application.UserService;
+import blog.jungmini.me.common.error.ErrorCode;
 import blog.jungmini.me.database.entity.UserEntity;
 import blog.jungmini.me.dto.request.CreateUserRequest;
-
-import blog.jungmini.common.error.ErrorCode;
 
 @Transactional
 public class UserControllerTest extends AbstractTestContainerTest {
