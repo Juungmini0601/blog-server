@@ -1,4 +1,4 @@
-package blog.jungmini.common.response;
+package blog.jungmini.me.common.response;
 
 public enum ResultType {
     SUCCESS,

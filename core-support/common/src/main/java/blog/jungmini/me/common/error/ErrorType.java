@@ -1,4 +1,4 @@
-package blog.jungmini.common.error;
+package blog.jungmini.me.common.error;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

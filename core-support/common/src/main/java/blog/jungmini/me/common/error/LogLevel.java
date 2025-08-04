@@ -1,4 +1,4 @@
-package blog.jungmini.common.error;
+package blog.jungmini.me.common.error;
 
 public enum LogLevel {
     DEBUG,

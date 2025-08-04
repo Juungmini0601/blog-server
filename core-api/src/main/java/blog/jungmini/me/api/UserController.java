@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import blog.jungmini.me.application.UserService;
+import blog.jungmini.me.common.response.ApiResponse;
 import blog.jungmini.me.database.entity.UserEntity;
 import blog.jungmini.me.dto.request.CreateUserRequest;
 import blog.jungmini.me.dto.response.CreateUserResponse;
-
-import blog.jungmini.common.response.ApiResponse;
 
 @RestController
 public class UserController {

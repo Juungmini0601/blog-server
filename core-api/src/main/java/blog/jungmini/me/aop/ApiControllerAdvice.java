@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import lombok.extern.slf4j.Slf4j;
 
-import blog.jungmini.common.error.CustomException;
-import blog.jungmini.common.error.ErrorType;
-import blog.jungmini.common.response.ApiResponse;
+import blog.jungmini.me.common.error.CustomException;
+import blog.jungmini.me.common.error.ErrorType;
+import blog.jungmini.me.common.response.ApiResponse;
 
 @Slf4j
 @RestControllerAdvice
