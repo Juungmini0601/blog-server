@@ -2,6 +2,7 @@ package blog.jungmini.me.database.entity;
 
 import jakarta.persistence.*;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -33,4 +34,26 @@ public class UserEntity extends BaseEntity {
 
     // For JPA
     protected UserEntity() {}
+
+    @Builder
+    public UserEntity(
+            Long userId,
+            String email,
+            String nickname,
+            String password,
+            String profileImageUrl,
+            String githubUrl,
+            String introduction) {
+        this.userId = userId;
+        this.email = email;
+        this.nickname = nickname;
+        this.password = password;
+        this.profileImageUrl = profileImageUrl;
+        this.githubUrl = githubUrl;
+        this.introduction = introduction;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

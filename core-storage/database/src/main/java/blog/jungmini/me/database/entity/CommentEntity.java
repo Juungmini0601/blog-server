@@ -10,7 +10,7 @@ import lombok.Getter;
 public class CommentEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comments_id")
+    @Column(name = "comment_id")
     private Long commentsId;
 
     @Column(name = "post_id", nullable = false)

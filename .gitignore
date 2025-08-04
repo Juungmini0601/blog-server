@@ -1,4 +1,5 @@
 ### Project Ignore
+*.private.env.json
 *.env
 docker/**/volume/
 
