@@ -1,9 +1,9 @@
 # 회원 가입
-POST http://{{host}}/v1/users
+POST http://{{host}}/v1/users/register
 Content-Type: application/json
 
 {
-  "email": "jungmini0601@gmail.com",
+  "email": "jungmini0602@gmail.com",
   "nickname": "jungmini",
   "password": "qwer1234"
 }

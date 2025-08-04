@@ -8,6 +8,7 @@ import blog.jungmini.me.common.error.CustomException;
 import blog.jungmini.me.common.error.ErrorType;
 import blog.jungmini.me.database.entity.UserEntity;
 import blog.jungmini.me.database.repository.UserRepository;
+import blog.jungmini.me.dto.request.UpdateUserRequest;
 
 @Service
 public class UserService {
@@ -33,5 +34,16 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserEntity getUserById(Long userId) {
         return userRepository.findByIdOrElseThrow(userId);
+    }
+
+    @Transactional
+    public UserEntity update(Long userId, UpdateUserRequest request) {
+        UserEntity userEntity = userRepository.findByIdOrElseThrow(userId);
+        userEntity.setNickname(request.getNickname());
+        userEntity.setProfileImageUrl(request.getProfileImageUrl());
+        userEntity.setGithubUrl(request.getGithubUrl());
+        userEntity.setIntroduction(request.getIntroduction());
+
+        return userRepository.save(userEntity);
     }
 }

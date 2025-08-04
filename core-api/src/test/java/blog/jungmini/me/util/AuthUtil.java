@@ -17,7 +17,7 @@ public class AuthUtil {
 
     public void register(String email, String nickname, String password) {
         CreateUserRequest request = new CreateUserRequest(email, nickname, password);
-        String registerUrl = String.format("http://localhost:%d/v1/users", port);
+        String registerUrl = String.format("http://localhost:%d/v1/users/register", port);
         restTemplate.postForObject(registerUrl, request, String.class);
     }
 

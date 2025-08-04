@@ -1,28 +1,27 @@
 package blog.jungmini.me.integration;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import jakarta.servlet.http.Cookie;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 
 import blog.jungmini.me.AbstractTestContainerTest;
-import blog.jungmini.me.application.UserService;
 import blog.jungmini.me.common.error.ErrorCode;
 import blog.jungmini.me.database.entity.UserEntity;
+import blog.jungmini.me.database.repository.UserRepository;
 import blog.jungmini.me.dto.request.CreateUserRequest;
+import blog.jungmini.me.dto.request.UpdateUserRequest;
 import blog.jungmini.me.util.AuthUtil;
 
-@Transactional
 public class UserControllerTest extends AbstractTestContainerTest {
 
     AuthUtil authUtil;
@@ -33,7 +32,13 @@ public class UserControllerTest extends AbstractTestContainerTest {
     }
 
     @Autowired
-    UserService userService;
+    UserRepository userRepository;
+
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
+        userRepository.flush();
+    }
 
     UserEntity defaultUser = UserEntity.builder()
             .email("test@test.com")
@@ -46,7 +51,7 @@ public class UserControllerTest extends AbstractTestContainerTest {
     void 회원_가입_성공() throws Exception {
         CreateUserRequest request =
                 new CreateUserRequest(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
-        String url = String.format("http://localhost:%d/v1/users", port);
+        String url = String.format("http://localhost:%d/v1/users/register", port);
 
         ResultActions response = mockMvc.perform(
                 post(url).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)));
@@ -59,8 +64,8 @@ public class UserControllerTest extends AbstractTestContainerTest {
     void 회원_가입_실패_중복된_이메일() throws Exception {
         CreateUserRequest request =
                 new CreateUserRequest(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
-        userService.register(request.toEntity());
-        String url = String.format("http://localhost:%d/v1/users", port);
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String url = String.format("http://localhost:%d/v1/users/register", port);
 
         ResultActions response = mockMvc.perform(
                 post(url).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)));
@@ -84,5 +89,34 @@ public class UserControllerTest extends AbstractTestContainerTest {
                 .andExpect(jsonPath("$.data.userId").isNumber())
                 .andExpect(jsonPath("$.data.email").value(defaultUser.getEmail()))
                 .andExpect(jsonPath("$.data.nickname").value(defaultUser.getNickname()));
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 성공")
+    void 회원_정보_수정_성공() throws Exception {
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
+
+        String url = String.format("http://localhost:%d/v1/users/update", port);
+        Cookie cookie = new Cookie("SESSION", sessionId);
+
+        UpdateUserRequest request = UpdateUserRequest.builder()
+                .nickname("newNickname")
+                .profileImageUrl("newProfileImageUrl")
+                .githubUrl("newGithubUrl")
+                .introduction("newIntroduction")
+                .build();
+
+        ResultActions response = mockMvc.perform(put(url).cookie(cookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.userId").isNumber())
+                .andExpect(jsonPath("$.data.email").value(defaultUser.getEmail()))
+                .andExpect(jsonPath("$.data.nickname").value(request.getNickname()))
+                .andExpect(jsonPath("$.data.profileImageUrl").value(request.getProfileImageUrl()))
+                .andExpect(jsonPath("$.data.githubUrl").value(request.getGithubUrl()))
+                .andExpect(jsonPath("$.data.introduction").value(request.getIntroduction()));
     }
 }

@@ -66,10 +66,11 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .addFilterAt(restApiLoginAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/v1/users", "/v1/auth/login")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers(HttpMethod.POST, "/v1/users/register", "/v1/auth/login")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
                 .logout(logout -> logout.logoutUrl("/v1/auth/logout").logoutSuccessHandler(this::logoutHandler));
 
         return security.build();
