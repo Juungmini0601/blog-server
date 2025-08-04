@@ -81,8 +81,8 @@ public class RestApiLoginAuthenticationFilter extends AbstractAuthenticationProc
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter()
-                .write(ApiResponse.error(ErrorType.AUTHENTICATION_ERROR, failed.getMessage())
-                        .toString());
+                .write(objectMapper.writeValueAsString(
+                        ApiResponse.error(ErrorType.AUTHENTICATION_ERROR, failed.getMessage())));
         response.getWriter().flush();
     }
 }
