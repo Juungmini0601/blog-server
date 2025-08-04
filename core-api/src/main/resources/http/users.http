@@ -8,3 +8,6 @@ Content-Type: application/json
   "password": "qwer1234"
 }
 ###
+
+# 내 정보 조회
+GET http://{{host}}/v1/users/me

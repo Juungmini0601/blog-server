@@ -29,4 +29,9 @@ public class UserService {
         user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
+
+    @Transactional(readOnly = true)
+    public UserEntity getUserById(Long userId) {
+        return userRepository.findByIdOrElseThrow(userId);
+    }
 }

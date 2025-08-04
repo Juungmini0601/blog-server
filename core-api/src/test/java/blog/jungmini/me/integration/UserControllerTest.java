@@ -1,9 +1,13 @@
 package blog.jungmini.me.integration;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import jakarta.servlet.http.Cookie;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +20,18 @@ import blog.jungmini.me.application.UserService;
 import blog.jungmini.me.common.error.ErrorCode;
 import blog.jungmini.me.database.entity.UserEntity;
 import blog.jungmini.me.dto.request.CreateUserRequest;
+import blog.jungmini.me.util.AuthUtil;
 
 @Transactional
 public class UserControllerTest extends AbstractTestContainerTest {
+
+    AuthUtil authUtil;
+
+    @BeforeEach
+    void setUp() {
+        authUtil = new AuthUtil(restTemplate, port);
+    }
+
     @Autowired
     UserService userService;
 
@@ -55,5 +68,21 @@ public class UserControllerTest extends AbstractTestContainerTest {
         response.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error.code").value(ErrorCode.E400.name()))
                 .andExpect(jsonPath("$.error.data").isString());
+    }
+
+    @Test
+    @DisplayName("로그인한 회원 정보 조회 성공")
+    void 로그인_회원_정보_조회_성공() throws Exception {
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
+
+        String url = String.format("http://localhost:%d/v1/users/me", port);
+        Cookie cookie = new Cookie("SESSION", sessionId);
+        ResultActions response = mockMvc.perform(get(url).cookie(cookie));
+
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.userId").isNumber())
+                .andExpect(jsonPath("$.data.email").value(defaultUser.getEmail()))
+                .andExpect(jsonPath("$.data.nickname").value(defaultUser.getNickname()));
     }
 }
