@@ -1,9 +1,8 @@
 package blog.jungmini.me.aop;
 
-import blog.jungmini.common.error.CustomException;
-import blog.jungmini.common.error.ErrorType;
-import blog.jungmini.common.response.ApiResponse;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +11,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Map;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+
+import blog.jungmini.common.error.CustomException;
+import blog.jungmini.common.error.ErrorType;
+import blog.jungmini.common.response.ApiResponse;
 
 @Slf4j
 @RestControllerAdvice
@@ -27,12 +29,15 @@ public class ApiControllerAdvice {
             default -> log.info("CustomException : {}", exception.getMessage(), exception);
         }
 
-        ApiResponse<?> errorResponse = ApiResponse.error(exception.getErrorType(), exception.getMessage());
+        ApiResponse<?> errorResponse = ApiResponse.error(exception.getErrorType(), exception.getData());
         return switch (exception.getErrorType()) {
             case VALIDATION_ERROR -> ResponseEntity.badRequest().body(errorResponse);
-            case AUTHENTICATION_ERROR -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-            case AUTHORIZATION_ERROR -> ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-            case INTERNAL_SERVER_ERROR -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            case AUTHENTICATION_ERROR -> ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(errorResponse);
+            case AUTHORIZATION_ERROR -> ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(errorResponse);
+            case INTERNAL_SERVER_ERROR -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse);
         };
     }
 
@@ -55,6 +60,7 @@ public class ApiControllerAdvice {
     public ResponseEntity<ApiResponse<?>> handleException(Exception exception) {
         log.error("Exception : {}", exception.getMessage(), exception);
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, exception.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, exception.getMessage()));
     }
 }

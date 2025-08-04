@@ -1,8 +1,9 @@
 package blog.jungmini.common.response;
 
+import lombok.Getter;
+
 import blog.jungmini.common.error.ErrorMessage;
 import blog.jungmini.common.error.ErrorType;
-import lombok.Getter;
 
 @Getter
 public class ApiResponse<T> {
