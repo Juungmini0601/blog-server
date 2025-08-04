@@ -119,4 +119,17 @@ public class UserControllerTest extends AbstractTestContainerTest {
                 .andExpect(jsonPath("$.data.githubUrl").value(request.getGithubUrl()))
                 .andExpect(jsonPath("$.data.introduction").value(request.getIntroduction()));
     }
+
+    @Test
+    @DisplayName("회원 탈퇴 성공")
+    void 회원_탈퇴_성공() throws Exception {
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
+
+        String url = String.format("http://localhost:%d/v1/users/remove", port);
+        Cookie cookie = new Cookie("SESSION", sessionId);
+
+        ResultActions response = mockMvc.perform(delete(url).cookie(cookie));
+        response.andExpect(status().isOk());
+    }
 }

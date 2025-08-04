@@ -51,4 +51,12 @@ public class UserController {
 
         return ApiResponse.success(UpdateUserResponse.fromEntity(user));
     }
+
+    @DeleteMapping("/v1/users/remove")
+    public ApiResponse<?> remove(Authentication authentication) {
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        userService.remove(details.getUserId());
+
+        return ApiResponse.success();
+    }
 }
