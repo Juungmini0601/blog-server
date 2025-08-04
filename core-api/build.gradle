@@ -6,6 +6,7 @@ dependencies {
     implementation project(':core-storage:redis')
     implementation project(':core-support:monitoring')
     implementation project(':core-support:logging')
+    implementation project(':core-support:common')
 
     // Spring MVC
     implementation 'org.springframework.boot:spring-boot-starter-web'
