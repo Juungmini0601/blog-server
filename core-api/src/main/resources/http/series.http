@@ -5,3 +5,13 @@ Content-Type: application/json
 {
   "name": "시리즈1"
 }
+
+###
+
+# 시리즈 수정
+PUT http://{{host}}/v1/series/2
+Content-Type: application/json
+
+{
+  "name": "시리즈 수정"
+}

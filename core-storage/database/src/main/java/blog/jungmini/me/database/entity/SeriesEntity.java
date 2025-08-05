@@ -29,4 +29,12 @@ public class SeriesEntity extends BaseEntity {
         this.userId = userId;
         this.name = name;
     }
+
+    public boolean isOwner(Long userId) {
+        return this.userId.equals(userId);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

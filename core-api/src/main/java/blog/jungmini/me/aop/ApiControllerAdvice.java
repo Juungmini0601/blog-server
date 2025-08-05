@@ -24,9 +24,9 @@ public class ApiControllerAdvice {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ApiResponse<?>> handleChatCustomException(CustomException exception) {
         switch (exception.getErrorType().getLogLevel()) {
-            case ERROR -> log.error("CustomException : {}", exception.getMessage(), exception);
-            case WARN -> log.warn("CustomException : {}", exception.getMessage(), exception);
-            default -> log.info("CustomException : {}", exception.getMessage(), exception);
+            case ERROR -> log.error("CustomException : {}", exception.getData(), exception);
+            case WARN -> log.warn("CustomException : {}", exception.getData(), exception);
+            default -> log.info("CustomException : {}", exception.getData(), exception);
         }
 
         ApiResponse<?> errorResponse = ApiResponse.error(exception.getErrorType(), exception.getData());
