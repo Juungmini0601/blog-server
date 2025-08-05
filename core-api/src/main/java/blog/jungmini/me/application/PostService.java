@@ -25,6 +25,11 @@ public class PostService {
         this.seriesRepository = seriesRepository;
     }
 
+    @Transactional(readOnly = true)
+    public PostEntity getById(Long postId) {
+        return postRepository.findByIdOrElseThrow(postId);
+    }
+
     @Transactional
     public PostEntity create(Long userId, PostEntity postEntity) {
         UserEntity author = userRepository.findByIdOrElseThrow(userId);

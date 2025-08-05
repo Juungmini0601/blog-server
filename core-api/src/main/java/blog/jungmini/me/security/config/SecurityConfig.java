@@ -69,6 +69,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth.requestMatchers(HttpMethod.POST, "/v1/users/register", "/v1/auth/login")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/v1/posts/**")
+                                .permitAll()
                                 .anyRequest()
                                 .authenticated())
                 .logout(logout -> logout.logoutUrl("/v1/auth/logout").logoutSuccessHandler(this::logoutHandler));

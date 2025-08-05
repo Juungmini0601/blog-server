@@ -11,6 +11,7 @@ import blog.jungmini.me.database.entity.PostEntity;
 import blog.jungmini.me.dto.request.CreatePostRequest;
 import blog.jungmini.me.dto.request.UpdatePostRequest;
 import blog.jungmini.me.dto.response.CreatePostResponse;
+import blog.jungmini.me.dto.response.GetPostResponse;
 import blog.jungmini.me.dto.response.UpdatePostResponse;
 import blog.jungmini.me.security.model.CustomUserDetails;
 
@@ -21,6 +22,13 @@ public class PostController {
 
     public PostController(PostService postService) {
         this.postService = postService;
+    }
+
+    @GetMapping("/v1/posts/{postId}")
+    public ApiResponse<GetPostResponse> getPostById(@PathVariable Long postId) {
+        PostEntity post = postService.getById(postId);
+
+        return ApiResponse.success(GetPostResponse.fromEntity(post));
     }
 
     @PostMapping("/v1/posts")
