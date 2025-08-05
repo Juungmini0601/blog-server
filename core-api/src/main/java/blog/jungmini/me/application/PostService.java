@@ -59,4 +59,16 @@ public class PostService {
 
         return postRepository.save(post);
     }
+
+    @Transactional
+    public void remove(Long userId, Long postId) {
+        UserEntity author = userRepository.findByIdOrElseThrow(userId);
+        PostEntity post = postRepository.findByIdOrElseThrow(postId);
+
+        if (!post.isAuthor(author)) {
+            throw new CustomException(ErrorType.AUTHORIZATION_ERROR, "작성자만 게시글을 삭제 할 수 있습니다.");
+        }
+
+        postRepository.deleteById(postId);
+    }
 }

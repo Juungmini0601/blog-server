@@ -42,4 +42,12 @@ public class PostController {
         PostEntity updatedPost = postService.update(details.getUserId(), postRequest);
         return ApiResponse.success(UpdatePostResponse.fromEntity(updatedPost));
     }
+
+    @DeleteMapping("/v1/posts/{postId}")
+    public ApiResponse<?> delete(Authentication authentication, @PathVariable Long postId) {
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        postService.remove(details.getUserId(), postId);
+
+        return ApiResponse.success();
+    }
 }
