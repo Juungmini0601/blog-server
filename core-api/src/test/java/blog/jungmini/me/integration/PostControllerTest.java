@@ -1,6 +1,7 @@
 package blog.jungmini.me.integration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,6 +24,8 @@ import blog.jungmini.me.database.repository.SeriesRepository;
 import blog.jungmini.me.database.repository.UserRepository;
 import blog.jungmini.me.dto.request.CreatePostRequest;
 import blog.jungmini.me.dto.request.CreateSeriesRequest;
+import blog.jungmini.me.dto.request.UpdatePostRequest;
+import blog.jungmini.me.dto.response.CreatePostResponse;
 import blog.jungmini.me.dto.response.CreateSeriesResponse;
 import blog.jungmini.me.util.AuthUtil;
 
@@ -125,6 +128,74 @@ public class PostControllerTest extends AbstractTestContainerTest {
                 .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("게시글 수정 성공")
+    void 게시글_수정_성공() throws Exception {
+        // 회원 가입 및 로그인
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
+        // 시리즈 및 게시글 생성
+        CreateSeriesResponse series = createSeries(sessionId, "testSeries");
+        CreatePostResponse createdPost = createPostWithSeries(
+                sessionId, new CreatePostRequest("testPost", "testTitle", "testContent", true, series.getSeriesId()));
+
+        String url = String.format("http://localhost:%d/v1/posts/%d", port, createdPost.getPostId());
+        Cookie cookie = new Cookie("SESSION", sessionId);
+
+        UpdatePostRequest request =
+                new UpdatePostRequest("update title", "update content", "update Url", true, series.getSeriesId());
+
+        ResultActions response = mockMvc.perform(put(url).cookie(cookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.title").value(request.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(request.getContent()))
+                .andExpect(jsonPath("$.data.isPublic").isBoolean())
+                .andExpect(jsonPath("$.data.seriesId").value(series.getSeriesId()));
+    }
+
+    @Test
+    @DisplayName("게시글 수정 실패 - 작성자가 아닌 경우")
+    void 게시글_수정_실패_작성자가_아닌_경우() throws Exception {
+        // 유저1번 로그인 및 게시글 생성
+        authUtil.register("user1@email.com", "user1", "qwer12345");
+        String session1 = authUtil.login("user1@email.com", "qwer12345");
+        CreateSeriesResponse series = createSeries(session1, "testSeries");
+        CreatePostResponse post = createPostWithSeries(
+                session1, new CreatePostRequest("testPost", "testTitle", "testContent", true, series.getSeriesId()));
+        // 다른 유저가 회원가입 하고 로그인
+        authUtil.register("user2@email.com", "user2", "qwer12345");
+        String session2 = authUtil.login("user2@email.com", "qwer12345");
+        // 다른 작성자의 게시글을 수정하려고 시도 할 경우
+        String url = String.format("http://localhost:%d/v1/posts/%d", port, post.getPostId());
+        Cookie cookie = new Cookie("SESSION", session2);
+
+        UpdatePostRequest request =
+                new UpdatePostRequest("update title", "update content", "update Url", true, series.getSeriesId());
+
+        ResultActions response = mockMvc.perform(put(url).cookie(cookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(status().isForbidden());
+    }
+
+    private CreatePostResponse createPostWithSeries(String sessionId, CreatePostRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add(HttpHeaders.COOKIE, "SESSION=" + sessionId);
+
+        String createPostUrl = String.format("http://localhost:%d/v1/posts", port);
+
+        HttpEntity<CreatePostRequest> httpEntity = new HttpEntity<>(request, headers);
+        ResponseEntity<ApiResponse<CreatePostResponse>> response = restTemplate.exchange(
+                createPostUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<>() {});
+
+        return response.getBody().getData();
     }
 
     private CreateSeriesResponse createSeries(String sessionId, String name) {

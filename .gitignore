@@ -2,6 +2,7 @@
 *.private.env.json
 *.env
 docker/**/volume/
+TODO.md
 
 ###
 .gradle

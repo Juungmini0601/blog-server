@@ -8,7 +8,7 @@ import lombok.Getter;
 import blog.jungmini.me.database.entity.PostEntity;
 
 @Getter
-public class CreatePostResponse {
+public class UpdatePostResponse {
     private Long postId;
     private Long userId;
     private String title;
@@ -20,10 +20,8 @@ public class CreatePostResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public CreatePostResponse() {}
-
     @Builder
-    public CreatePostResponse(
+    public UpdatePostResponse(
             Long postId,
             Long userId,
             String title,
@@ -46,8 +44,8 @@ public class CreatePostResponse {
         this.updatedAt = updatedAt;
     }
 
-    public static CreatePostResponse fromEntity(PostEntity entity) {
-        return CreatePostResponse.builder()
+    public static UpdatePostResponse fromEntity(PostEntity entity) {
+        return UpdatePostResponse.builder()
                 .postId(entity.getPostId())
                 .userId(entity.getUserId())
                 .title(entity.getTitle())

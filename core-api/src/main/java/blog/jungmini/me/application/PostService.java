@@ -3,6 +3,8 @@ package blog.jungmini.me.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import blog.jungmini.me.common.error.CustomException;
+import blog.jungmini.me.common.error.ErrorType;
 import blog.jungmini.me.database.entity.PostEntity;
 import blog.jungmini.me.database.entity.SeriesEntity;
 import blog.jungmini.me.database.entity.UserEntity;
@@ -34,5 +36,27 @@ public class PostService {
         }
 
         return postRepository.save(postEntity);
+    }
+
+    @Transactional
+    public PostEntity update(Long userId, PostEntity updatePost) {
+        UserEntity author = userRepository.findByIdOrElseThrow(userId);
+        PostEntity post = postRepository.findByIdOrElseThrow(updatePost.getPostId());
+
+        if (!post.isAuthor(author)) {
+            throw new CustomException(ErrorType.AUTHORIZATION_ERROR, "작성자만 게시글을 수정 할 수 있습니다.");
+        }
+
+        post.setTitle(updatePost.getTitle());
+        post.setContent(updatePost.getContent());
+        post.setThumbnailUrl(updatePost.getThumbnailUrl());
+        post.setPublic(updatePost.getIsPublic());
+
+        if (post.getSeriesId() != null) {
+            SeriesEntity series = seriesRepository.findByIdOrElseThrow(post.getSeriesId());
+            post.setSeries(series);
+        }
+
+        return postRepository.save(post);
     }
 }
