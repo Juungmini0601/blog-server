@@ -1,0 +1,7 @@
+# 시리즈 생성
+POST http://{{host}}/v1/series
+Content-Type: application/json
+
+{
+  "name": "시리즈1"
+}

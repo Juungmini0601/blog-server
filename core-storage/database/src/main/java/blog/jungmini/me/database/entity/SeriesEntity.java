@@ -2,6 +2,7 @@ package blog.jungmini.me.database.entity;
 
 import jakarta.persistence.*;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -21,4 +22,11 @@ public class SeriesEntity extends BaseEntity {
 
     // For JPA
     protected SeriesEntity() {}
+
+    @Builder
+    public SeriesEntity(Long seriesId, Long userId, String name) {
+        this.seriesId = seriesId;
+        this.userId = userId;
+        this.name = name;
+    }
 }
