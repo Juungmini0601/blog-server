@@ -223,6 +223,27 @@ public class PostControllerTest extends AbstractTestContainerTest {
         response.andExpect(status().isForbidden());
     }
 
+    @Test
+    @DisplayName("게시글 단건 조회 성공")
+    void 게시글_단건_조회_성공() throws Exception {
+        // 회원 가입 및 로그인
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
+        // 시리즈 및 게시글 생성
+        CreateSeriesResponse series = createSeries(sessionId, "testSeries");
+        CreatePostResponse createdPost = createPostWithSeries(
+                sessionId, new CreatePostRequest("testPost", "testTitle", "testContent", true, series.getSeriesId()));
+
+        String url = String.format("http://localhost:%d/v1/posts/%d", port, createdPost.getPostId());
+
+        ResultActions response = mockMvc.perform(get(url));
+
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.postId").isNumber())
+                .andExpect(jsonPath("$.data.title").value(createdPost.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(createdPost.getContent()));
+    }
+
     private CreatePostResponse createPostWithSeries(String sessionId, CreatePostRequest request) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
