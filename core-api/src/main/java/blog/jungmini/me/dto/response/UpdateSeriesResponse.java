@@ -4,23 +4,19 @@ import java.time.LocalDateTime;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 import blog.jungmini.me.database.entity.SeriesEntity;
 
-@ToString
 @Getter
-public class CreateSeriesResponse {
+public class UpdateSeriesResponse {
     private Long seriesId;
     private Long userId;
     private String name;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public CreateSeriesResponse() {}
-
     @Builder
-    public CreateSeriesResponse(
+    public UpdateSeriesResponse(
             Long seriesId, Long userId, String name, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.seriesId = seriesId;
         this.userId = userId;
@@ -29,8 +25,8 @@ public class CreateSeriesResponse {
         this.updatedAt = updatedAt;
     }
 
-    public static CreateSeriesResponse fromEntity(SeriesEntity entity) {
-        return CreateSeriesResponse.builder()
+    public static UpdateSeriesResponse fromEntity(SeriesEntity entity) {
+        return UpdateSeriesResponse.builder()
                 .seriesId(entity.getSeriesId())
                 .userId(entity.getUserId())
                 .name(entity.getName())

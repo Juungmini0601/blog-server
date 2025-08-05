@@ -8,11 +8,13 @@ import blog.jungmini.me.common.error.ErrorType;
 @Getter
 public class ApiResponse<T> {
 
-    private final ResultType result;
+    private ResultType result;
 
-    private final T data;
+    private T data;
 
-    private final ErrorMessage error;
+    private ErrorMessage error;
+    // For JSON Object
+    public ApiResponse() {}
 
     public ApiResponse(ResultType result, T data, ErrorMessage error) {
         this.result = result;
