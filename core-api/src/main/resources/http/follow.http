@@ -1,0 +1,4 @@
+# 팔로우 생성
+POST http://{{host}}/v1/follows/3
+
+###

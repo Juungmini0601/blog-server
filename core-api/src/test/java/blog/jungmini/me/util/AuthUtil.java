@@ -1,9 +1,15 @@
 package blog.jungmini.me.util;
 
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 
+import blog.jungmini.me.common.response.ApiResponse;
 import blog.jungmini.me.dto.request.CreateUserRequest;
 import blog.jungmini.me.dto.request.LoginRequest;
+import blog.jungmini.me.dto.response.CreateUserResponse;
 
 public class AuthUtil {
 
@@ -15,10 +21,14 @@ public class AuthUtil {
         this.port = port;
     }
 
-    public void register(String email, String nickname, String password) {
+    public CreateUserResponse register(String email, String nickname, String password) {
         CreateUserRequest request = new CreateUserRequest(email, nickname, password);
         String registerUrl = String.format("http://localhost:%d/v1/users/register", port);
-        restTemplate.postForObject(registerUrl, request, String.class);
+
+        HttpEntity<CreateUserRequest> httpEntity = new HttpEntity<>(request);
+        ResponseEntity<ApiResponse<CreateUserResponse>> response =
+                restTemplate.exchange(registerUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<>() {});
+        return response.getBody().getData();
     }
 
     public String login(String email, String password) {
