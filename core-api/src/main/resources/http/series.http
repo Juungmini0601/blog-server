@@ -15,3 +15,8 @@ Content-Type: application/json
 {
   "name": "시리즈 수정"
 }
+
+###
+
+# 시리즈 삭제
+DELETE http://{{host}}/v1/series/3

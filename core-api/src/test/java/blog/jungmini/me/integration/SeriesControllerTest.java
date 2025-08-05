@@ -1,7 +1,6 @@
 package blog.jungmini.me.integration;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,10 +16,9 @@ import org.springframework.http.*;
 import org.springframework.test.web.servlet.ResultActions;
 
 import blog.jungmini.me.AbstractTestContainerTest;
-import blog.jungmini.me.application.SeriesService;
-import blog.jungmini.me.application.UserService;
 import blog.jungmini.me.common.response.ApiResponse;
 import blog.jungmini.me.database.entity.UserEntity;
+import blog.jungmini.me.database.repository.SeriesRepository;
 import blog.jungmini.me.database.repository.UserRepository;
 import blog.jungmini.me.dto.request.CreateSeriesRequest;
 import blog.jungmini.me.dto.request.UpdateSeriesRequest;
@@ -39,13 +37,12 @@ public class SeriesControllerTest extends AbstractTestContainerTest {
     UserRepository userRepository;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    SeriesService seriesService;
+    private SeriesRepository seriesRepository;
 
     @AfterEach
     void tearDown() {
+        seriesRepository.deleteAll();
+        seriesRepository.flush();
         userRepository.deleteAll();
         userRepository.flush();
     }
@@ -128,6 +125,42 @@ public class SeriesControllerTest extends AbstractTestContainerTest {
         ResultActions response = mockMvc.perform(put(url).cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("시리즈 삭제 성공")
+    void 시리즈_삭제_성공() throws Exception {
+        // 회원 가입 & 로그인
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
+        Cookie cookie = new Cookie("SESSION", sessionId);
+        // 시리즈 생성
+        CreateSeriesResponse series = createSeries(sessionId, "testSeries");
+
+        // 시리즈 삭제
+        String url = String.format("http://localhost:%d/v1/series/%d", port, series.getSeriesId());
+
+        ResultActions response = mockMvc.perform(delete(url).cookie(cookie));
+
+        response.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("시리즈 삭제 실패 - 다른 유저의 시리즈 삭제 요청")
+    void 시리즈_삭제_실패_403() throws Exception {
+        authUtil.register("user1@email.com", "user1", "qwer12345");
+        String session1 = authUtil.login("user1@email.com", "qwer12345");
+        CreateSeriesResponse series = createSeries(session1, "series");
+        // 다른 유저가 회원가입 하고 로그인
+        authUtil.register("user2@email.com", "user2", "qwer12345");
+        String session2 = authUtil.login("user2@email.com", "qwer12345");
+        Cookie cookie = new Cookie("SESSION", session2);
+        // 시리즈 삭제
+        String url = String.format("http://localhost:%d/v1/series/%d", port, series.getSeriesId());
+
+        ResultActions response = mockMvc.perform(delete(url).cookie(cookie));
 
         response.andExpect(status().isForbidden());
     }

@@ -51,4 +51,12 @@ public class SeriesController {
 
         return ApiResponse.success(UpdateSeriesResponse.fromEntity(updatedSeries));
     }
+
+    @DeleteMapping("/v1/series/{seriesId}")
+    public ApiResponse<?> delete(Authentication authentication, @PathVariable Long seriesId) {
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        seriesService.remove(details.getUserId(), seriesId);
+
+        return ApiResponse.success();
+    }
 }
