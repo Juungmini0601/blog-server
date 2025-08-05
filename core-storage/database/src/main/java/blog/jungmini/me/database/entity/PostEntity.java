@@ -2,7 +2,11 @@ package blog.jungmini.me.database.entity;
 
 import jakarta.persistence.*;
 
+import lombok.Builder;
 import lombok.Getter;
+
+import blog.jungmini.me.common.error.CustomException;
+import blog.jungmini.me.common.error.ErrorType;
 
 @Getter
 @Entity
@@ -36,4 +40,36 @@ public class PostEntity extends BaseEntity {
 
     // For JPA
     protected PostEntity() {}
+
+    @Builder
+    public PostEntity(
+            Long postId,
+            Long userId,
+            String title,
+            String content,
+            String thumbnailUrl,
+            Boolean isPublic,
+            Long viewCount,
+            Long seriesId) {
+        this.postId = postId;
+        this.userId = userId;
+        this.title = title;
+        this.content = content;
+        this.thumbnailUrl = thumbnailUrl;
+        this.isPublic = isPublic;
+        this.viewCount = viewCount;
+        this.seriesId = seriesId;
+    }
+
+    public void setAuthor(UserEntity userEntity) {
+        this.userId = userEntity.getUserId();
+    }
+
+    public void setSeries(SeriesEntity seriesEntity) {
+        if (!seriesEntity.getUserId().equals(this.userId)) {
+            throw new CustomException(ErrorType.VALIDATION_ERROR, "게시글은 자신의 시리즈에만 포함 할 수 있습니다.");
+        }
+
+        this.seriesId = seriesEntity.getSeriesId();
+    }
 }
