@@ -1,5 +1,6 @@
 package blog.jungmini.me.integration;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -104,6 +105,50 @@ public class FollowController extends AbstractTestContainerTest {
         response.andExpect(status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("팔로우 삭제 성공")
+    void 팔로우_삭제_성공() throws Exception {
+        authUtil.register(user1.getEmail(), user1.getNickname(), user1.getPassword());
+        CreateUserResponse createdUser2 = authUtil.register(user2.getEmail(), user2.getNickname(), user2.getPassword());
+        // 로그인 후 팔로우
+        String sessionId = authUtil.login(user1.getEmail(), user1.getPassword());
+        follow(sessionId, createdUser2.getUserId());
+        // 팔로우 삭제
+        Cookie cookie = new Cookie("SESSION", sessionId);
+        String followUrl = String.format("http://localhost:%d/v1/follows/%d", port, createdUser2.getUserId());
+
+        ResultActions response = mockMvc.perform(delete(followUrl).cookie(cookie));
+        response.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("팔로우 삭제 실패 - 자기 자신을 팔로잉 하는 경우")
+    void 팔로우_삭제_실패_자기_자신_팔로우_삭제() throws Exception {
+        CreateUserResponse createdUser = authUtil.register(user1.getEmail(), user1.getNickname(), user1.getPassword());
+        // 로그인 후 팔로우
+        String sessionId = authUtil.login(user1.getEmail(), user1.getPassword());
+        Cookie cookie = new Cookie("SESSION", sessionId);
+        String followUrl = String.format("http://localhost:%d/v1/follows/%d", port, createdUser.getUserId());
+
+        ResultActions response = mockMvc.perform(delete(followUrl).cookie(cookie));
+        response.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("팔로우 삭제 실패 - 존재 하지 않는 팔로우 정보")
+    void 팔로우_삭제_실패_존재하지_않는_팔로잉_정보() throws Exception {
+        // 회원 가입 & 로그인
+        authUtil.register(user1.getEmail(), user1.getNickname(), user1.getPassword());
+        String sessionId = authUtil.login(user1.getEmail(), user1.getPassword());
+        // 존재하지 않는 유저 아이디
+        Long userId = 400L;
+        // 팔로우 삭제
+        Cookie cookie = new Cookie("SESSION", sessionId);
+        String followUrl = String.format("http://localhost:%d/v1/follows/%d", port, userId);
+
+        ResultActions response = mockMvc.perform(delete(followUrl).cookie(cookie));
+        response.andExpect(status().isBadRequest());
+    }
     /**
      *
      * @param sessionId 팔로우 하는 유저 세션

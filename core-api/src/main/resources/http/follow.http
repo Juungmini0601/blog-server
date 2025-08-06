@@ -2,3 +2,6 @@
 POST http://{{host}}/v1/follows/3
 
 ###
+
+# 팔로우 삭제
+DELETE http://{{host}}/v1/follows/6

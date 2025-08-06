@@ -8,4 +8,6 @@ import blog.jungmini.me.database.entity.FollowEntity;
 @Repository
 public interface FollowRepository extends JpaRepository<FollowEntity, Long> {
     boolean existsByFollowerIdAndFolloweeId(Long followerId, Long followeeId);
+
+    void deleteByFollowerIdAndFolloweeId(Long followerId, Long followeeId);
 }
