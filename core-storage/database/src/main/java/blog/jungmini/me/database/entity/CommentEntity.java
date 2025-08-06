@@ -2,6 +2,7 @@ package blog.jungmini.me.database.entity;
 
 import jakarta.persistence.*;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -11,7 +12,7 @@ public class CommentEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Long commentsId;
+    private Long commentId;
 
     @Column(name = "post_id", nullable = false)
     private Long postId;
@@ -27,4 +28,17 @@ public class CommentEntity extends BaseEntity {
 
     // For JPA
     protected CommentEntity() {}
+
+    @Builder
+    public CommentEntity(Long commentId, Long postId, Long userId, Long parentId, String content) {
+        this.commentId = commentId;
+        this.postId = postId;
+        this.userId = userId;
+        this.parentId = parentId;
+        this.content = content;
+    }
+
+    public void setUser(UserEntity userEntity) {
+        this.userId = userEntity.getUserId();
+    }
 }

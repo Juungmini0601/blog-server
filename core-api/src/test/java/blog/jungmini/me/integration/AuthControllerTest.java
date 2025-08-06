@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 
 import blog.jungmini.me.AbstractTestContainerTest;
 import blog.jungmini.me.database.entity.UserEntity;
@@ -20,7 +19,6 @@ import blog.jungmini.me.database.repository.UserRepository;
 import blog.jungmini.me.dto.request.LoginRequest;
 import blog.jungmini.me.util.AuthUtil;
 
-@Transactional
 public class AuthControllerTest extends AbstractTestContainerTest {
 
     AuthUtil authUtil;

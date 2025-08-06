@@ -1,0 +1,9 @@
+# 댓글 생성
+POST http://{{host}}/v1/comments
+Content-Type: application/json
+
+{
+  "postId": 2,
+  "parentId": 1,
+  "content": "댓글 내용"
+}
