@@ -21,4 +21,12 @@ public class PostLikeEntity extends BaseEntity {
 
     // For JPA
     protected PostLikeEntity() {}
+
+    public static PostLikeEntity of(PostEntity postEntity, UserEntity userEntity) {
+        PostLikeEntity entity = new PostLikeEntity();
+        entity.postId = postEntity.getPostId();
+        entity.userId = userEntity.getUserId();
+
+        return entity;
+    }
 }

@@ -1,0 +1,10 @@
+# 게시글 생성
+POST http://{{host}}/v1/posts
+Content-Type: application/json
+
+{
+  "title": "title",
+  "content": "content",
+  "thumbnailUrl": "thumbnail",
+  "isPublic": true
+}

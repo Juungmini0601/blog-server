@@ -1,0 +1,6 @@
+# 게시글 좋아요
+POST http://{{host}}/v1/posts/1/like
+###
+
+# 게시글 좋아요 취소
+DELETE http://{{host}}/v1/posts/1/like
