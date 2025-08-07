@@ -105,12 +105,12 @@ CREATE TABLE series
 CREATE TABLE comments
 (
     `comment_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `post_id`     BIGINT NOT NULL,
-    `user_id`     BIGINT NOT NULL,
-    `parent_id`   BIGINT,
-    `content`     TEXT   NOT NULL,
-    `created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    `post_id`    BIGINT NOT NULL,
+    `user_id`    BIGINT NOT NULL,
+    `parent_id`  BIGINT,
+    `content`    TEXT   NOT NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE notifications

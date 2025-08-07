@@ -42,9 +42,7 @@ public class SeriesControllerTest extends AbstractTestContainerTest {
     @AfterEach
     void tearDown() {
         seriesRepository.deleteAll();
-        seriesRepository.flush();
         userRepository.deleteAll();
-        userRepository.flush();
     }
 
     UserEntity defaultUser = UserEntity.builder()

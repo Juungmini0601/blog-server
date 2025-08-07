@@ -15,14 +15,19 @@ spring:
       idle-timeout: 60000
       connection-timeout: 30000
 
-  jpa:
-    show-sql: true
-    open-in-view: false
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        format_sql: true
+  sql:
+    init:
+      mode: always
+    log:
+      format: true
+    statements: true
+
+  logging:
+    level:
+      org:
+        springframework:
+          jdbc: DEBUG
+
 
 ---
 spring:
@@ -34,9 +39,20 @@ spring:
     url:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+    log:
+      format: true
+    statements: true
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: DEBUG
 
 ---
 spring:
@@ -55,12 +71,3 @@ spring:
       maximum-pool-size: 50 # 최대 커넥션
       idle-timeout: 60000
       connection-timeout: 30000
-
-  jpa:
-    show-sql: true
-    open-in-view: false
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        format_sql: true

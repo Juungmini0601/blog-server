@@ -42,7 +42,6 @@ public class CommentControllerTest extends AbstractTestContainerTest {
         // TODO 간혹 데이터베이스 초기화가 제대로 이루어지지 않는 경우가 있다.
         // MockMVC, JPA, Transactional간의 상관관계에 대해서 제대로 학습이 필요하다.
         userRepository.deleteAll();
-        userRepository.flush();
     }
 
     UserEntity defaultUser = UserEntity.builder()

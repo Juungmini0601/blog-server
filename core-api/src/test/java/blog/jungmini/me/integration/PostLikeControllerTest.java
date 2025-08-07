@@ -55,11 +55,8 @@ public class PostLikeControllerTest extends AbstractTestContainerTest {
     @BeforeEach
     void tearDown() {
         postLikeRepository.deleteAll();
-        postLikeRepository.flush();
         postRepository.deleteAll();
-        postRepository.flush();
         userRepository.deleteAll();
-        userRepository.flush();
     }
 
     @Test

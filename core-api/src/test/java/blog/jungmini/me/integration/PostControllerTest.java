@@ -48,11 +48,8 @@ public class PostControllerTest extends AbstractTestContainerTest {
     @AfterEach
     void tearDown() {
         postRepository.deleteAll();
-        postRepository.flush();
         seriesRepository.deleteAll();
-        seriesRepository.flush();
         userRepository.deleteAll();
-        userRepository.flush();
     }
 
     UserEntity defaultUser = UserEntity.builder()

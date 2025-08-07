@@ -42,9 +42,7 @@ public class FollowController extends AbstractTestContainerTest {
     @AfterEach
     void tearDown() {
         followRepository.deleteAll();
-        followRepository.flush();
         userRepository.deleteAll();
-        userRepository.flush();
     }
 
     UserEntity user1 = UserEntity.builder()

@@ -37,7 +37,6 @@ public class UserControllerTest extends AbstractTestContainerTest {
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
-        userRepository.flush();
     }
 
     UserEntity defaultUser = UserEntity.builder()
