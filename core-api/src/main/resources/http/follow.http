@@ -1,7 +1,12 @@
 # 팔로우 생성
-POST http://{{host}}/v1/follows/3
+POST http://{{host}}/v1/follows/1
 
 ###
 
 # 팔로우 삭제
 DELETE http://{{host}}/v1/follows/6
+
+###
+
+# 팔로우 목록 조회
+GET http://{{host}}/v1/follows/1?lastFollowId=3

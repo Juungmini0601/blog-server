@@ -12,6 +12,10 @@ CREATE TABLE IF NOT EXISTS `users`
     UNIQUE KEY `email` (`email`)
 ) DEFAULT CHARSET = utf8mb4;
 
+-- 팔로우 아이템 커버링 인덱스
+CREATE INDEX idx_user_following_covering ON users (user_id, nickname, profile_image_url, introduction);
+
+
 CREATE TABLE IF NOT EXISTS `oauths`
 (
     `oauth_id`    BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
@@ -32,6 +36,10 @@ CREATE TABLE IF NOT EXISTS `follows`
     `updated_at`  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY `follower_id_followee_id` (`follower_id`, `followee_id`)
 ) DEFAULT CHARSET = utf8mb4;
+
+-- 팔로잉, 팔로워 조회에 사용될 커버링 인덱스
+CREATE INDEX `idx_follower_id` ON `follows` (`follower_id`);
+CREATE INDEX `idx_followee_id` ON `follows` (`followee_id`);
 
 CREATE TABLE IF NOT EXISTS `posts`
 (

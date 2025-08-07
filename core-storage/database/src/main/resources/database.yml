@@ -17,17 +17,16 @@ spring:
 
   sql:
     init:
-      mode: always
+      mode: never
     log:
       format: true
     statements: true
 
-  logging:
-    level:
-      org:
-        springframework:
-          jdbc: DEBUG
-
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: DEBUG
 
 ---
 spring:

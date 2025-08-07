@@ -1,20 +1,44 @@
 package blog.jungmini.me.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import blog.jungmini.me.common.error.CustomException;
 import blog.jungmini.me.common.error.ErrorType;
+import blog.jungmini.me.common.response.CursorResponse;
 import blog.jungmini.me.database.entity.FollowEntity;
+import blog.jungmini.me.database.projection.UserFollowItem;
 import blog.jungmini.me.database.repository.FollowRepository;
+import blog.jungmini.me.database.repository.UserRepository;
 
 @Service
 public class FollowService {
 
     private final FollowRepository followRepository;
+    private final UserRepository userRepository;
 
-    public FollowService(FollowRepository followRepository) {
+    public FollowService(FollowRepository followRepository, UserRepository userRepository) {
         this.followRepository = followRepository;
+        this.userRepository = userRepository;
+    }
+
+    /**
+     * followerId를 팔로우 하고 있는 유저 아이디 반환
+     * @param userId 팔로우 당하는 유저의 아이디
+     */
+    public CursorResponse<UserFollowItem, Long> getFollowerList(Long userId, Long lastFollowId) {
+        List<Long> followeeIds = followRepository.findFolloweesByFollowerIdWithPaging(userId, lastFollowId);
+
+        if (followeeIds.isEmpty()) {
+            return CursorResponse.of(List.of(), null, false);
+        }
+
+        List<UserFollowItem> followItems = userRepository.findUserFollowItemsByIds(followeeIds);
+        Long nextCursor = followeeIds.get(followeeIds.size() - 1);
+        boolean hasNext = followeeIds.size() == 20;
+        return CursorResponse.of(followItems, nextCursor, hasNext);
     }
 
     /**
