@@ -1,6 +1,7 @@
 package blog.jungmini.me.integration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -21,6 +22,7 @@ import blog.jungmini.me.database.entity.UserEntity;
 import blog.jungmini.me.database.repository.UserRepository;
 import blog.jungmini.me.dto.request.CreateCommentRequest;
 import blog.jungmini.me.dto.request.CreatePostRequest;
+import blog.jungmini.me.dto.request.UpdateCommentRequest;
 import blog.jungmini.me.dto.response.CreateCommentResponse;
 import blog.jungmini.me.dto.response.CreatePostResponse;
 import blog.jungmini.me.util.AuthUtil;
@@ -98,6 +100,66 @@ public class CommentControllerTest extends AbstractTestContainerTest {
         response.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.postId").value(createdPost.getPostId()))
                 .andExpect(jsonPath("$.data.parentId").value(createdComment.getCommentId()));
+    }
+
+    @Test
+    @DisplayName("댓글 수정 성공")
+    void 댓글_수정_성공() throws Exception {
+        // 회원 가입 및 로그인
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
+        // 게시글 생성
+        CreatePostResponse createdPost = createPost(sessionId, defaultCreatePostRequest);
+        // 댓글 생성
+        CreateCommentResponse createdComment =
+                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), null, "test comment"));
+
+        String url = String.format("http://localhost:%d/v1/comments/%d", port, createdComment.getCommentId());
+        String updatedContent = "updated comment";
+
+        UpdateCommentRequest request = new UpdateCommentRequest(updatedContent);
+        Cookie cookie = new Cookie("SESSION", sessionId);
+
+        ResultActions response = mockMvc.perform(put(url).cookie(cookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("댓글 수정 실패 - 다른 사람이 작성한 댓글")
+    void 댓글_수정_실패_다른_사람이_작성한_댓글() throws Exception {
+        // 첫번째 유저 회원가입 및 로그인
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
+        // 게시글 생성
+        CreatePostResponse createdPost = createPost(sessionId, defaultCreatePostRequest);
+        // 댓글 생성
+        CreateCommentResponse createdComment =
+                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), null, "test comment"));
+
+        // 다른 유저 회원가입 및 로그인
+        UserEntity anotherUser = UserEntity.builder()
+                .email("another@test.com")
+                .nickname("another")
+                .password("qwer12345")
+                .build();
+
+        authUtil.register(anotherUser.getEmail(), anotherUser.getNickname(), anotherUser.getPassword());
+        String anotherSessionId = authUtil.login(anotherUser.getEmail(), anotherUser.getPassword());
+
+        String url = String.format("http://localhost:%d/v1/comments/%d", port, createdComment.getCommentId());
+        String updatedContent = "updated comment";
+
+        UpdateCommentRequest request = new UpdateCommentRequest(updatedContent);
+        Cookie cookie = new Cookie("SESSION", anotherSessionId);
+
+        ResultActions response = mockMvc.perform(put(url).cookie(cookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(status().isForbidden());
     }
 
     private CreateCommentResponse createComment(String sessionId, CreateCommentRequest request) {

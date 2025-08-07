@@ -7,3 +7,12 @@ Content-Type: application/json
   "parentId": 1,
   "content": "댓글 내용"
 }
+###
+
+# 댓글 수정
+PUT http://{{host}}/v1/comments/1
+Content-Type: application/json
+
+{
+  "content": "수정"
+}

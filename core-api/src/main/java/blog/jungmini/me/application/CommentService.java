@@ -3,6 +3,8 @@ package blog.jungmini.me.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import blog.jungmini.me.common.error.CustomException;
+import blog.jungmini.me.common.error.ErrorType;
 import blog.jungmini.me.database.entity.CommentEntity;
 import blog.jungmini.me.database.entity.UserEntity;
 import blog.jungmini.me.database.repository.CommentRepository;
@@ -25,5 +27,18 @@ public class CommentService {
         commentEntity.setUser(user);
 
         return commentRepository.save(commentEntity);
+    }
+
+    @Transactional
+    public CommentEntity update(Long requestUserId, CommentEntity commentEntity) {
+        CommentEntity comment = commentRepository.findByIdOrElseThrow(commentEntity.getCommentId());
+
+        if (!comment.isOwner(requestUserId)) {
+            throw new CustomException(ErrorType.AUTHORIZATION_ERROR, "작성자만 수정 할 수 있습니다.");
+        }
+
+        comment.setContent(commentEntity.getContent());
+
+        return commentRepository.save(comment);
     }
 }

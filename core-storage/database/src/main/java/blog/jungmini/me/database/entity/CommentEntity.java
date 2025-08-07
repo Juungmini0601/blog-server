@@ -41,4 +41,12 @@ public class CommentEntity extends BaseEntity {
     public void setUser(UserEntity userEntity) {
         this.userId = userEntity.getUserId();
     }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isOwner(Long userId) {
+        return this.userId.equals(userId);
+    }
 }
