@@ -42,4 +42,12 @@ public class CommentController {
 
         return ApiResponse.success(UpdateCommentResponse.fromEntity(comment));
     }
+
+    @DeleteMapping("/v1/comments/{commentId}")
+    public ApiResponse<?> delete(Authentication authentication, @PathVariable Long commentId) {
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        commentService.remove(customUserDetails.getUserId(), commentId);
+
+        return ApiResponse.success();
+    }
 }

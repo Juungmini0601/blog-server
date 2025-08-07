@@ -16,3 +16,8 @@ Content-Type: application/json
 {
   "content": "수정"
 }
+
+###
+
+# 댓글 삭제
+DELETE http://{{host}}/v1/comments/1

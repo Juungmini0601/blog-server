@@ -1,7 +1,6 @@
 package blog.jungmini.me.integration;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -158,6 +157,56 @@ public class CommentControllerTest extends AbstractTestContainerTest {
         ResultActions response = mockMvc.perform(put(url).cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 성공")
+    void 댓글_삭제_성공() throws Exception {
+        // 회원 가입 및 로그인
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
+        // 게시글 생성
+        CreatePostResponse createdPost = createPost(sessionId, defaultCreatePostRequest);
+        // 댓글 생성
+        CreateCommentResponse createdComment =
+                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), null, "test comment"));
+
+        String url = String.format("http://localhost:%d/v1/comments/%d", port, createdComment.getCommentId());
+        Cookie cookie = new Cookie("SESSION", sessionId);
+
+        ResultActions response = mockMvc.perform(delete(url).cookie(cookie));
+
+        response.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 실패 - 자신이 작성한 댓글이 아닌 경우")
+    void 댓글_삭제_실패_자신이_작성하지_않은_댓글() throws Exception {
+        // 첫번째 유저 회원가입 및 로그인
+        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
+        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
+        // 게시글 생성
+        CreatePostResponse createdPost = createPost(sessionId, defaultCreatePostRequest);
+        // 댓글 생성
+        CreateCommentResponse createdComment =
+                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), null, "test comment"));
+
+        // 다른 유저 회원가입 및 로그인
+        UserEntity anotherUser = UserEntity.builder()
+                .email("another@test.com")
+                .nickname("another")
+                .password("qwer12345")
+                .build();
+
+        authUtil.register(anotherUser.getEmail(), anotherUser.getNickname(), anotherUser.getPassword());
+        String anotherSessionId = authUtil.login(anotherUser.getEmail(), anotherUser.getPassword());
+
+        String url = String.format("http://localhost:%d/v1/comments/%d", port, createdComment.getCommentId());
+        Cookie cookie = new Cookie("SESSION", anotherSessionId);
+
+        ResultActions response = mockMvc.perform(delete(url).cookie(cookie));
 
         response.andExpect(status().isForbidden());
     }

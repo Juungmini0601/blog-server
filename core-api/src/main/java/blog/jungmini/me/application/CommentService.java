@@ -41,4 +41,15 @@ public class CommentService {
 
         return commentRepository.save(comment);
     }
+
+    @Transactional
+    public void remove(Long userId, Long commentId) {
+        CommentEntity comment = commentRepository.findByIdOrElseThrow(commentId);
+
+        if (!comment.isOwner(userId)) {
+            throw new CustomException(ErrorType.AUTHORIZATION_ERROR, "작성자만 삭제 할 수 있습니다.");
+        }
+
+        commentRepository.delete(comment);
+    }
 }
