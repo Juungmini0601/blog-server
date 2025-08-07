@@ -19,6 +19,8 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
 
+    private static final int PAGE_SIZE = 20;
+
     public FollowService(FollowRepository followRepository, UserRepository userRepository) {
         this.followRepository = followRepository;
         this.userRepository = userRepository;
@@ -29,7 +31,20 @@ public class FollowService {
      * @param userId 팔로우 당하는 유저의 아이디
      */
     public CursorResponse<UserFollowItem, Long> getFollowerList(Long userId, Long lastFollowId) {
-        List<Long> followeeIds = followRepository.findFolloweesByFollowerIdWithPaging(userId, lastFollowId);
+        List<Long> followerIds = followRepository.findFollowersByFollowerIdWithPaging(userId, lastFollowId);
+
+        if (followerIds.isEmpty()) {
+            return CursorResponse.of(List.of(), null, false);
+        }
+
+        List<UserFollowItem> followItems = userRepository.findUserFollowItemsByIds(followerIds);
+        Long nextCursor = followerIds.get(followerIds.size() - 1);
+        boolean hasNext = followerIds.size() == PAGE_SIZE;
+        return CursorResponse.of(followItems, nextCursor, hasNext);
+    }
+
+    public CursorResponse<UserFollowItem, Long> getFolloweeList(Long userId, Long lastFollowId) {
+        List<Long> followeeIds = followRepository.findFolloweeIdsByFollowerId(userId, lastFollowId);
 
         if (followeeIds.isEmpty()) {
             return CursorResponse.of(List.of(), null, false);
@@ -37,7 +52,7 @@ public class FollowService {
 
         List<UserFollowItem> followItems = userRepository.findUserFollowItemsByIds(followeeIds);
         Long nextCursor = followeeIds.get(followeeIds.size() - 1);
-        boolean hasNext = followeeIds.size() == 20;
+        boolean hasNext = followeeIds.size() == PAGE_SIZE;
         return CursorResponse.of(followItems, nextCursor, hasNext);
     }
 

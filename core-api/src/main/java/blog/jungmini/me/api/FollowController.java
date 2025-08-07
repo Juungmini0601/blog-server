@@ -21,7 +21,7 @@ public class FollowController {
     }
 
     // userId를 팔로우 하고 있는 유저들의 리스트 반환
-    @GetMapping("/v1/follows/{userId}")
+    @GetMapping("/v1/followers/{userId}")
     public CursorResponse<UserFollowItem, Long> getFollowersList(
             @PathVariable Long userId, @RequestParam(required = false) Long lastFollowId) {
         if (lastFollowId == null) {
@@ -29,6 +29,16 @@ public class FollowController {
         }
 
         return followService.getFollowerList(userId, lastFollowId);
+    }
+
+    @GetMapping("/v1/followees/{userId}")
+    public CursorResponse<UserFollowItem, Long> getFolloweeList(
+            @PathVariable Long userId, @RequestParam(required = false) Long lastFollowId) {
+        if (lastFollowId == null) {
+            lastFollowId = Long.MAX_VALUE;
+        }
+
+        return followService.getFolloweeList(userId, lastFollowId);
     }
 
     @PostMapping("/v1/follows/{userId}")

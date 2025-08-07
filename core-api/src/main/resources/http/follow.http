@@ -8,5 +8,9 @@ DELETE http://{{host}}/v1/follows/6
 
 ###
 
-# 팔로우 목록 조회
-GET http://{{host}}/v1/follows/1?lastFollowId=3
+# 유저 아이디가 팔로잉 하고 있는 사람 조회
+GET http://{{host}}/v1/followees/1
+###
+
+# 유저아이디를 팔로우 하고 있는 사람 조회
+GET http://{{host}}/v1/followers/1

@@ -20,7 +20,18 @@ public interface FollowRepository extends CrudRepository<FollowEntity, Long> {
                 ORDER BY follow_id DESC
                 LIMIT 20
             """)
-    List<Long> findFolloweesByFollowerIdWithPaging(Long followeeId, Long lastFollowId);
+    List<Long> findFollowersByFollowerIdWithPaging(Long followeeId, Long lastFollowId);
+
+    @Query(
+            """
+                SELECT followee_id
+                FROM follows
+                WHERE follower_id = :followerId
+                AND follow_id < :lastFollowId
+                ORDER BY follow_id DESC
+                LIMIT 20
+            """)
+    List<Long> findFolloweeIdsByFollowerId(Long followerId, Long lastFollowId);
 
     boolean existsByFollowerIdAndFolloweeId(Long followerId, Long followeeId);
 

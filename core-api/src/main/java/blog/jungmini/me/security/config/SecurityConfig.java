@@ -69,7 +69,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth.requestMatchers(HttpMethod.POST, "/v1/users/register", "/v1/auth/login")
                                 .permitAll()
-                                .requestMatchers(HttpMethod.GET, "/v1/posts/**")
+                                .requestMatchers(
+                                        HttpMethod.GET,
+                                        "/v1/posts/**",
+                                        "/v1/users/**",
+                                        "/v1/comments/**",
+                                        "/v1/followees/**",
+                                        "/v1/followers/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
