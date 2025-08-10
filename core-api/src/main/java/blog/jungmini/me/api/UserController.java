@@ -1,5 +1,6 @@
 package blog.jungmini.me.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.security.core.Authentication;
@@ -53,10 +54,11 @@ public class UserController {
     }
 
     @DeleteMapping("/v1/users/remove")
-    public ApiResponse<?> remove(Authentication authentication) {
+    public ApiResponse<?> remove(Authentication authentication, HttpServletRequest request) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
         userService.remove(details.getUserId());
 
+        request.getSession().invalidate();
         return ApiResponse.success();
     }
 }

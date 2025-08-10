@@ -1,13 +1,17 @@
 package blog.jungmini.me.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import blog.jungmini.me.common.error.CustomException;
 import blog.jungmini.me.common.error.ErrorType;
+import blog.jungmini.me.common.response.CursorResponse;
 import blog.jungmini.me.database.entity.PostEntity;
 import blog.jungmini.me.database.entity.SeriesEntity;
 import blog.jungmini.me.database.entity.UserEntity;
+import blog.jungmini.me.database.projection.PostItem;
 import blog.jungmini.me.database.repository.PostRepository;
 import blog.jungmini.me.database.repository.SeriesRepository;
 import blog.jungmini.me.database.repository.UserRepository;
@@ -18,11 +22,22 @@ public class PostService {
     private final UserRepository userRepository;
     private final SeriesRepository seriesRepository;
 
+    private static final int PAGE_SIZE = 20;
+
     public PostService(
             PostRepository postRepository, UserRepository userRepository, SeriesRepository seriesRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.seriesRepository = seriesRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public CursorResponse<PostItem, Long> getPostList(Long lastPostId) {
+        List<PostItem> posts = postRepository.findPosts(lastPostId);
+        Long nextCursor = posts.getLast().postId();
+        boolean hasNext = posts.size() == PAGE_SIZE;
+
+        return CursorResponse.of(posts, nextCursor, hasNext);
     }
 
     @Transactional(readOnly = true)

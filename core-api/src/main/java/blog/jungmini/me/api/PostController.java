@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import blog.jungmini.me.application.PostService;
 import blog.jungmini.me.common.response.ApiResponse;
+import blog.jungmini.me.common.response.CursorResponse;
 import blog.jungmini.me.database.entity.PostEntity;
+import blog.jungmini.me.database.projection.PostItem;
 import blog.jungmini.me.dto.request.CreatePostRequest;
 import blog.jungmini.me.dto.request.UpdatePostRequest;
 import blog.jungmini.me.dto.response.CreatePostResponse;
@@ -22,6 +24,15 @@ public class PostController {
 
     public PostController(PostService postService) {
         this.postService = postService;
+    }
+
+    @GetMapping("/v1/posts")
+    public CursorResponse<PostItem, Long> getPosts(@RequestParam(required = false) Long lastPostId) {
+        if (lastPostId == null) {
+            lastPostId = Long.MAX_VALUE;
+        }
+
+        return postService.getPostList(lastPostId);
     }
 
     @GetMapping("/v1/posts/{postId}")
