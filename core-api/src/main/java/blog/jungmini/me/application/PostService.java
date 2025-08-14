@@ -11,7 +11,9 @@ import blog.jungmini.me.common.response.CursorResponse;
 import blog.jungmini.me.database.entity.PostEntity;
 import blog.jungmini.me.database.entity.SeriesEntity;
 import blog.jungmini.me.database.entity.UserEntity;
+import blog.jungmini.me.database.projection.PostDetail;
 import blog.jungmini.me.database.projection.PostItem;
+import blog.jungmini.me.database.repository.PostLikeRepository;
 import blog.jungmini.me.database.repository.PostRepository;
 import blog.jungmini.me.database.repository.SeriesRepository;
 import blog.jungmini.me.database.repository.UserRepository;
@@ -19,14 +21,19 @@ import blog.jungmini.me.database.repository.UserRepository;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
     private final UserRepository userRepository;
     private final SeriesRepository seriesRepository;
 
     private static final int PAGE_SIZE = 20;
 
     public PostService(
-            PostRepository postRepository, UserRepository userRepository, SeriesRepository seriesRepository) {
+            PostRepository postRepository,
+            PostLikeRepository postLikeRepository,
+            UserRepository userRepository,
+            SeriesRepository seriesRepository) {
         this.postRepository = postRepository;
+        this.postLikeRepository = postLikeRepository;
         this.userRepository = userRepository;
         this.seriesRepository = seriesRepository;
     }
@@ -34,15 +41,25 @@ public class PostService {
     @Transactional(readOnly = true)
     public CursorResponse<PostItem, Long> getPostList(Long lastPostId) {
         List<PostItem> posts = postRepository.findPosts(lastPostId);
-        Long nextCursor = posts.getLast().postId();
-        boolean hasNext = posts.size() == PAGE_SIZE;
+        if (posts.isEmpty()) {
+            return CursorResponse.of(posts, null, false);
+        }
 
+        Long nextCursor = posts.get(posts.size() - 1).postId();
+        boolean hasNext = posts.size() == PAGE_SIZE;
         return CursorResponse.of(posts, nextCursor, hasNext);
     }
 
     @Transactional(readOnly = true)
-    public PostEntity getById(Long postId) {
-        return postRepository.findByIdOrElseThrow(postId);
+    public PostDetail getById(Long postId, Long userId) {
+        PostDetail postDetail = postRepository.findPostDetailByIdOrElseThrow(postId);
+
+        if (userId != null) {
+            boolean isLiked = postLikeRepository.existsByPostIdAndUserId(postId, userId);
+            postDetail.setIsLiked(isLiked);
+        }
+
+        return postDetail;
     }
 
     @Transactional

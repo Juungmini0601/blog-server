@@ -13,7 +13,7 @@ import blog.jungmini.me.database.projection.PostItem;
 
 @Repository
 public interface PostRepository extends CrudRepository<PostEntity, Long>, PostRepositoryCustom {
-
+    // TODO 테이블 설계 변경 예정, 현재 시스템은 쿼리가 너무 많이 날라감
     @Query(
             """
             SELECT p.post_id, p.thumbnail_url, p.created_at, p.content, u.user_id, u.nickname, u.profile_image_url,
@@ -21,7 +21,8 @@ public interface PostRepository extends CrudRepository<PostEntity, Long>, PostRe
                (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = p.post_id) AS like_count
             FROM posts p
                 JOIN users u ON p.user_id = u.user_id
-            WHERE post_id < :lastPostId
+            WHERE p.post_id < :lastPostId
+            ORDER BY p.post_id DESC
             LIMIT 20
             """)
     List<PostItem> findPosts(Long lastPostId);

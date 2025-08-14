@@ -40,7 +40,6 @@ public class UserController {
     public ApiResponse<CreateUserResponse> register(@RequestBody @Valid CreateUserRequest request) {
         UserEntity user = request.toEntity();
         UserEntity registered = userService.register(user);
-
         return ApiResponse.success(CreateUserResponse.fromEntity(registered));
     }
 

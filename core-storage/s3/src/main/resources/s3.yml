@@ -1,11 +1,11 @@
 cloud:
   aws:
     s3:
-      bucket: ${AWS_S3_BUCKET_NAME}
+      bucket: ${AWS_S3_BUCKET_NAME:test-bucket}
     stack:
       auto: false
     region:
       static: ap-northeast-2
     credentials:
-      access-key: ${AWS_ACCESS_KEY}
-      secret-key: ${AWS_SECRET_KEY}
+      access-key: ${AWS_ACCESS_KEY:test-access-key}
+      secret-key: ${AWS_SECRET_KEY:test-secret-key}

@@ -12,7 +12,6 @@ public class CreateCommentResponse {
     private Long commentId;
     private Long postId;
     private Long userId;
-    private Long parentId;
     private String content;
 
     private LocalDateTime createdAt;
@@ -25,14 +24,12 @@ public class CreateCommentResponse {
             Long commentId,
             Long postId,
             Long userId,
-            Long parentId,
             String content,
             LocalDateTime createdAt,
             LocalDateTime updatedAt) {
         this.commentId = commentId;
         this.postId = postId;
         this.userId = userId;
-        this.parentId = parentId;
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -43,7 +40,6 @@ public class CreateCommentResponse {
                 .commentId(entity.getCommentId())
                 .postId(entity.getPostId())
                 .userId(entity.getUserId())
-                .parentId(entity.getParentId())
                 .content(entity.getContent())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())

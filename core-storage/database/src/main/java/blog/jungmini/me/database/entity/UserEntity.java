@@ -5,7 +5,9 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
+@ToString(exclude = "password")
 @Getter
 @Table("users")
 public class UserEntity extends BaseEntity {

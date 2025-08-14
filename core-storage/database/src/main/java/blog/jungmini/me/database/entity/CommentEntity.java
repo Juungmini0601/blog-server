@@ -16,16 +16,13 @@ public class CommentEntity extends BaseEntity {
 
     private Long userId;
 
-    private Long parentId;
-
     private String content;
 
     @Builder
-    public CommentEntity(Long commentId, Long postId, Long userId, Long parentId, String content) {
+    public CommentEntity(Long commentId, Long postId, Long userId, String content) {
         this.commentId = commentId;
         this.postId = postId;
         this.userId = userId;
-        this.parentId = parentId;
         this.content = content;
     }
 

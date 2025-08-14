@@ -53,8 +53,8 @@ public class CommentControllerTest extends AbstractTestContainerTest {
     CreatePostRequest defaultCreatePostRequest = new CreatePostRequest("title", "content", "url", true, null);
 
     @Test
-    @DisplayName("댓글 생성 성공 - parent ID X")
-    void 댓글_생성_성공_parent_ID_X() throws Exception {
+    @DisplayName("댓글 생성 성공")
+    void 댓글_생성_성공() throws Exception {
         // 회원 가입 및 로그인
         authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
         String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
@@ -62,7 +62,7 @@ public class CommentControllerTest extends AbstractTestContainerTest {
         CreatePostResponse createdPost = createPost(sessionId, defaultCreatePostRequest);
 
         String url = String.format("http://localhost:%d/v1/comments", port, createdPost.getPostId());
-        CreateCommentRequest request = new CreateCommentRequest(createdPost.getPostId(), null, "test comment");
+        CreateCommentRequest request = new CreateCommentRequest(createdPost.getPostId(), "test comment");
         Cookie cookie = new Cookie("SESSION", sessionId);
 
         ResultActions response = mockMvc.perform(post(url)
@@ -71,33 +71,6 @@ public class CommentControllerTest extends AbstractTestContainerTest {
                 .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.data.postId").value(createdPost.getPostId()));
-    }
-
-    @Test
-    @DisplayName("댓글 생성 성공 - parent ID O")
-    void 댓글_생성_성공_parent_ID_O() throws Exception {
-        // 회원 가입 및 로그인
-        authUtil.register(defaultUser.getEmail(), defaultUser.getNickname(), defaultUser.getPassword());
-        String sessionId = authUtil.login(defaultUser.getEmail(), defaultUser.getPassword());
-        // 게시글 생성
-        CreatePostResponse createdPost = createPost(sessionId, defaultCreatePostRequest);
-        // 댓글 생성
-        CreateCommentResponse createdComment =
-                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), null, "test comment"));
-
-        String url = String.format("http://localhost:%d/v1/comments", port, createdPost.getPostId());
-        CreateCommentRequest request =
-                new CreateCommentRequest(createdPost.getPostId(), createdComment.getCommentId(), "test comment");
-        Cookie cookie = new Cookie("SESSION", sessionId);
-
-        ResultActions response = mockMvc.perform(post(url)
-                .cookie(cookie)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)));
-
-        response.andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.postId").value(createdPost.getPostId()))
-                .andExpect(jsonPath("$.data.parentId").value(createdComment.getCommentId()));
     }
 
     @Test
@@ -110,7 +83,7 @@ public class CommentControllerTest extends AbstractTestContainerTest {
         CreatePostResponse createdPost = createPost(sessionId, defaultCreatePostRequest);
         // 댓글 생성
         CreateCommentResponse createdComment =
-                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), null, "test comment"));
+                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), "test comment"));
 
         String url = String.format("http://localhost:%d/v1/comments/%d", port, createdComment.getCommentId());
         String updatedContent = "updated comment";
@@ -135,7 +108,7 @@ public class CommentControllerTest extends AbstractTestContainerTest {
         CreatePostResponse createdPost = createPost(sessionId, defaultCreatePostRequest);
         // 댓글 생성
         CreateCommentResponse createdComment =
-                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), null, "test comment"));
+                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), "test comment"));
 
         // 다른 유저 회원가입 및 로그인
         UserEntity anotherUser = UserEntity.builder()
@@ -170,7 +143,7 @@ public class CommentControllerTest extends AbstractTestContainerTest {
         CreatePostResponse createdPost = createPost(sessionId, defaultCreatePostRequest);
         // 댓글 생성
         CreateCommentResponse createdComment =
-                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), null, "test comment"));
+                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), "test comment"));
 
         String url = String.format("http://localhost:%d/v1/comments/%d", port, createdComment.getCommentId());
         Cookie cookie = new Cookie("SESSION", sessionId);
@@ -190,7 +163,7 @@ public class CommentControllerTest extends AbstractTestContainerTest {
         CreatePostResponse createdPost = createPost(sessionId, defaultCreatePostRequest);
         // 댓글 생성
         CreateCommentResponse createdComment =
-                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), null, "test comment"));
+                createComment(sessionId, new CreateCommentRequest(createdPost.getPostId(), "test comment"));
 
         // 다른 유저 회원가입 및 로그인
         UserEntity anotherUser = UserEntity.builder()

@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import blog.jungmini.me.application.CommentService;
 import blog.jungmini.me.common.response.ApiResponse;
+import blog.jungmini.me.common.response.CursorResponse;
 import blog.jungmini.me.database.entity.CommentEntity;
+import blog.jungmini.me.database.projection.CommentItem;
 import blog.jungmini.me.dto.request.CreateCommentRequest;
 import blog.jungmini.me.dto.request.UpdateCommentRequest;
 import blog.jungmini.me.dto.response.CreateCommentResponse;
@@ -21,6 +23,16 @@ public class CommentController {
 
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
+    }
+
+    @GetMapping("/v1/comments/{postId}")
+    public CursorResponse<CommentItem, Long> getComments(
+            @PathVariable Long postId, @RequestParam(required = false) Long lastCommentId) {
+        if (lastCommentId == null) {
+            lastCommentId = Long.MAX_VALUE;
+        }
+
+        return commentService.getComments(postId, lastCommentId);
     }
 
     @PostMapping("/v1/comments")

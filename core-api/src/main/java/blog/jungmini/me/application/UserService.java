@@ -4,12 +4,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
+
 import blog.jungmini.me.common.error.CustomException;
 import blog.jungmini.me.common.error.ErrorType;
 import blog.jungmini.me.database.entity.UserEntity;
 import blog.jungmini.me.database.repository.UserRepository;
 import blog.jungmini.me.dto.request.UpdateUserRequest;
 
+@Slf4j
 @Service
 public class UserService {
     private final UserRepository userRepository;

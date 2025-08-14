@@ -1,12 +1,16 @@
 package blog.jungmini.me.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import blog.jungmini.me.common.error.CustomException;
 import blog.jungmini.me.common.error.ErrorType;
+import blog.jungmini.me.common.response.CursorResponse;
 import blog.jungmini.me.database.entity.CommentEntity;
 import blog.jungmini.me.database.entity.UserEntity;
+import blog.jungmini.me.database.projection.CommentItem;
 import blog.jungmini.me.database.repository.CommentRepository;
 import blog.jungmini.me.database.repository.UserRepository;
 
@@ -15,6 +19,8 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+
+    private static final int PAGE_SIZE = 20;
 
     public CommentService(CommentRepository commentRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
@@ -51,5 +57,17 @@ public class CommentService {
         }
 
         commentRepository.delete(comment);
+    }
+
+    @Transactional(readOnly = true)
+    public CursorResponse<CommentItem, Long> getComments(Long postId, Long lastCommentId) {
+        List<CommentItem> comments = commentRepository.findCommentsByPostId(postId, lastCommentId);
+        if (comments.isEmpty()) {
+            return CursorResponse.of(comments, null, false);
+        }
+
+        Long nextCursor = comments.get(comments.size() - 1).commentId();
+        boolean hasNext = comments.size() == PAGE_SIZE;
+        return CursorResponse.of(comments, nextCursor, hasNext);
     }
 }

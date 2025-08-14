@@ -9,6 +9,7 @@ import blog.jungmini.me.application.PostService;
 import blog.jungmini.me.common.response.ApiResponse;
 import blog.jungmini.me.common.response.CursorResponse;
 import blog.jungmini.me.database.entity.PostEntity;
+import blog.jungmini.me.database.projection.PostDetail;
 import blog.jungmini.me.database.projection.PostItem;
 import blog.jungmini.me.dto.request.CreatePostRequest;
 import blog.jungmini.me.dto.request.UpdatePostRequest;
@@ -36,8 +37,13 @@ public class PostController {
     }
 
     @GetMapping("/v1/posts/{postId}")
-    public ApiResponse<GetPostResponse> getPostById(@PathVariable Long postId) {
-        PostEntity post = postService.getById(postId);
+    public ApiResponse<GetPostResponse> getPostById(@PathVariable Long postId, Authentication authentication) {
+        if (authentication == null) {
+            return ApiResponse.success(GetPostResponse.fromEntity(postService.getById(postId, null)));
+        }
+
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        PostDetail post = postService.getById(postId, details.getUserId());
 
         return ApiResponse.success(GetPostResponse.fromEntity(post));
     }
