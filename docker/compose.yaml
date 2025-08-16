@@ -1,19 +1,17 @@
 services:
-  mysql:
-    image: mysql:8.0.40
+  postgres:
+    image: postgres:17
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: qwer1234
-      MYSQL_DATABASE: blog
-      MYSQL_USER: jungmini
-      MYSQL_PASSWORD: qwer1234
+      POSTGRES_PASSWORD: qwer1234
+      POSTGRES_DB: postgres
+      POSTGRES_USER: jungmini
     ports:
-      - "13306:3306"
+      - "15432:5432"
     volumes:
-      - ./mysql/volume:/var/lib/mysql
+      - ./postgres/volume:/var/lib/postgresql/data
     networks:
-      - blog
-
+      - logly
   redis:
     image: redis:7.4.1
     restart: unless-stopped
@@ -23,31 +21,8 @@ services:
     volumes:
       - ./redis/volume:/data
     networks:
-      - blog
-
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus/config:/etc/prometheus
-      - ./prometheus/volume:/prometheus
-    ports:
-      - "19090:9090"
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    restart: unless-stopped
-    networks:
-      - blog
-
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - "13000:3000"
-    volumes:
-      - ./grafana/volume:/var/lib/grafana
-    networks:
-      - blog
+      - logly
 
 networks:
-  blog:
+  logly:
     driver: bridge

@@ -5,15 +5,18 @@ spring:
 
   datasource:
     hikari:
-      jdbc-url: jdbc:mysql://${LOCAL_DATABASE_URL}/blog
+      jdbc-url: jdbc:postgresql://${LOCAL_DATABASE_URL}/postgres
       username: ${LOCAL_DATABASE_USERNAME}
       password: ${LOCAL_DATABASE_PASSWORD}
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      pool-name: MyChatConnectionPool
+      driver-class-name: org.postgresql.Driver
+      pool-name: LoglyConnectionPool
       minimum-idle: 10 # 최소 커넥션
       maximum-pool-size: 50 # 최대 커넥션
       idle-timeout: 60000
       connection-timeout: 30000
+      # PostgreSQL 전용 설정
+      connection-test-query: SELECT 1
+      leak-detection-threshold: 60000
 
   sql:
     init:
@@ -22,11 +25,10 @@ spring:
       format: true
     statements: true
 
-logging:
-  level:
-    org:
-      springframework:
-        jdbc: DEBUG
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      default_schema: logly
 
 ---
 spring:
@@ -35,23 +37,16 @@ spring:
       on-profile: test
 
   datasource:
-    url:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=logly
+    username: jungmini
+    password: qwer1234
+    driver-class-name: org.postgresql.Driver
 
-
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:schema.sql
-    log:
-      format: true
-    statements: true
-
-logging:
-  level:
-    org:
-      springframework:
-        jdbc: DEBUG
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      default_schema: logly
+      ddl-auto: create
 
 ---
 spring:
@@ -61,12 +56,20 @@ spring:
 
   datasource:
     hikari:
-      jdbc-url: jdbc:mysql://${PROD_DATABASE_URL}/blog
+      jdbc-url: jdbc:postgresql://${PROD_DATABASE_URL}/postgres?currentSchema=logly
       username: ${PROD_DATABASE_USERNAME}
       password: ${PROD_DATABASE_PASSWORD}
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      pool-name: MyChatConnectionPool
+      driver-class-name: org.postgresql.Driver
+      pool-name: LoglyConnectionPool
       minimum-idle: 10 # 최소 커넥션
       maximum-pool-size: 50 # 최대 커넥션
       idle-timeout: 60000
       connection-timeout: 30000
+      # PostgreSQL 전용 설정
+      connection-test-query: SELECT 1
+      leak-detection-threshold: 60000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      default_schema: logly

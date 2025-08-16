@@ -1,6 +1,10 @@
 dependencies {
-    implementation project(':core-support:common')
-    // Spring Data JDBC
-    api 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+  // 공통 모듈 의존성
+  implementation project(':core-support:common')
+  
+  // Spring Data JPA 
+  api 'org.springframework.boot:spring-boot-starter-data-jpa'
+  
+  // PostgreSQL 
+  runtimeOnly 'org.postgresql:postgresql'
 }

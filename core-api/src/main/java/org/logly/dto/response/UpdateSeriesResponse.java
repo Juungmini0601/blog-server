@@ -1,0 +1,37 @@
+package org.logly.dto.response;
+
+import java.time.LocalDateTime;
+
+import lombok.Builder;
+import lombok.Getter;
+
+import org.logly.database.entity.SeriesEntity;
+
+@Getter
+public class UpdateSeriesResponse {
+    private Long seriesId;
+    private Long userId;
+    private String name;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @Builder
+    public UpdateSeriesResponse(
+            Long seriesId, Long userId, String name, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.seriesId = seriesId;
+        this.userId = userId;
+        this.name = name;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public static UpdateSeriesResponse fromEntity(SeriesEntity entity) {
+        return UpdateSeriesResponse.builder()
+                .seriesId(entity.getSeriesId())
+                .userId(entity.getUserId())
+                .name(entity.getName())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .build();
+    }
+}
