@@ -9,3 +9,7 @@ cloud:
     credentials:
       access-key: ${AWS_ACCESS_KEY:test-access-key}
       secret-key: ${AWS_SECRET_KEY:test-secret-key}
+
+cdn:
+  domain: ${CDN_DOMAIN:cdn.logly.org}
+  originPath: ${CDN_ORIGIN_PATH:/images}

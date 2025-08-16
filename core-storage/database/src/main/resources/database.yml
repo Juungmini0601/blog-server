@@ -5,7 +5,7 @@ spring:
 
   datasource:
     hikari:
-      jdbc-url: jdbc:postgresql://${LOCAL_DATABASE_URL}/postgres
+      jdbc-url: jdbc:postgresql://${LOCAL_DATABASE_URL}/postgres?currentSchema=logly
       username: ${LOCAL_DATABASE_USERNAME}
       password: ${LOCAL_DATABASE_PASSWORD}
       driver-class-name: org.postgresql.Driver

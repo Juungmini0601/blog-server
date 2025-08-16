@@ -20,13 +20,9 @@ public class ImageService {
     public ImageUploadResponse generatePresignedUploadUrl(String filename) {
         String key = generateImageKey(filename);
         String uploadUrl = s3Service.generatePresignedUploadUrl(key, Duration.ofMinutes(5));
-        String accessUrl = s3Service.getPublicUrl(key);
+        String accessUrl = s3Service.getCdnUrl(key);
 
         return new ImageUploadResponse(uploadUrl, key, accessUrl);
-    }
-
-    public String getImageUrl(String key) {
-        return s3Service.getPublicUrl(key);
     }
 
     private String generateImageKey(String filename) {

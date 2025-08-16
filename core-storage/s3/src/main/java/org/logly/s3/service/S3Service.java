@@ -15,10 +15,18 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 public class S3Service {
     private final AmazonS3 amazonS3Client;
     private final String bucket;
+    private final String cdnDomain;
+    private final String originPath;
 
-    public S3Service(AmazonS3 amazonS3Client, @Value("${cloud.aws.s3.bucket}") String bucket) {
+    public S3Service(
+            AmazonS3 amazonS3Client,
+            @Value("${cloud.aws.s3.bucket}") String bucket,
+            @Value("${cdn.domain}") String cdnDomain,
+            @Value("${cdn.originPath}") String originPath) {
         this.amazonS3Client = amazonS3Client;
         this.bucket = bucket;
+        this.cdnDomain = cdnDomain;
+        this.originPath = originPath;
     }
 
     public String generatePresignedUploadUrl(String key, Duration expiration) {
@@ -30,6 +38,18 @@ public class S3Service {
 
         URL presignedUrl = amazonS3Client.generatePresignedUrl(request);
         return presignedUrl.toString();
+    }
+
+    public String getCdnUrl(String key) {
+        String viewerPath = key;
+        if ("/images".equals(originPath)) {
+            String prefix = "images/";
+            if (viewerPath.startsWith(prefix)) {
+                viewerPath = viewerPath.substring(prefix.length());
+            }
+        }
+
+        return String.format("https://%s/%s", cdnDomain, viewerPath);
     }
 
     public String getPublicUrl(String key) {
