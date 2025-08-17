@@ -33,7 +33,8 @@ public class PostLikeService {
         if (postLikeRepository.existsByPostAndUser(post, user)) {
             throw new CustomException(ErrorType.VALIDATION_ERROR, "이미 좋아요한 게시물 입니다.");
         }
-
+        // TODO 동시성 문제 증분 업데이트 추가 예정
+        post.setLikeCount(post.getLikeCount() + 1);
         PostLikeEntity postLike = PostLikeEntity.of(post, user);
         return postLikeRepository.save(postLike);
     }
@@ -43,7 +44,8 @@ public class PostLikeService {
         UserEntity user = userRepository.findByIdOrElseThrow(userId);
         PostEntity post = postRepository.findByIdOrElseThrow(postId);
         PostLikeEntity like = postLikeRepository.findByPostIdAndUserIdOrElseThrow(post, user);
-
+        // TODO 동시성 문제 증분 업데이트 추가 예정
+        post.setLikeCount(post.getLikeCount() - 1);
         postLikeRepository.delete(like);
     }
 }

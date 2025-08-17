@@ -34,6 +34,9 @@ public class CommentService {
     public CommentEntity create(CustomUserDetails details, CreateCommentRequest request) {
         UserEntity user = userRepository.findByIdOrElseThrow(details.getUserId());
         PostEntity post = postRepository.findByIdOrElseThrow(request.getPostId());
+        // TODO 동시성 문제 증분 업데이트 추가 예정
+        post.setCommentCount(post.getCommentCount() + 1);
+        postRepository.save(post);
 
         CommentEntity comment = CommentEntity.builder()
                 .content(request.getContent())
@@ -67,6 +70,9 @@ public class CommentService {
             throw new CustomException(ErrorType.AUTHORIZATION_ERROR, "작성자만 삭제 할 수 있습니다.");
         }
 
+        PostEntity post = comment.getPost();
+        // TODO 동시성 문제 증분 업데이트 추가 예정
+        post.setCommentCount(post.getCommentCount() - 1);
         commentRepository.delete(comment);
     }
 
