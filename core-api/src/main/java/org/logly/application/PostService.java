@@ -44,7 +44,9 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public CursorResponse<PostItem, Long> getPostListByUserId(Long lastPostId, Long userId) {
-        List<PostItem> postItems = postRepository.findPostItemsByUserId(userId, lastPostId);
+        UserEntity user = userRepository.findByIdOrElseThrow(userId);
+        List<PostItem> postItems = postRepository.findPostItemsByUser(user, lastPostId);
+
         if (postItems.isEmpty()) {
             return CursorResponse.of(postItems, null, false);
         }
@@ -56,7 +58,8 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public CursorResponse<PostItem, Long> getPostListBySeriesId(Long lastPostId, Long seriesId) {
-        List<PostItem> postItems = postRepository.findPostItemsBySeriesId(seriesId, lastPostId);
+        SeriesEntity series = seriesRepository.findByIdOrElseThrow(seriesId);
+        List<PostItem> postItems = postRepository.findPostItemsBySeries(series, lastPostId);
 
         if (postItems.isEmpty()) {
             return CursorResponse.of(postItems, null, false);
@@ -102,6 +105,8 @@ public class PostService {
             }
 
             post.setSeries(series);
+            series.setPostCount(series.getPostCount() + 1);
+            seriesRepository.save(series);
         }
 
         return postRepository.save(post);
@@ -123,7 +128,14 @@ public class PostService {
 
         if (request.getSeriesId() != null) {
             SeriesEntity series = seriesRepository.findByIdOrElseThrow(request.getSeriesId());
+            if (post.getSeries() != null && !post.getSeries().equals(series)) {
+                post.getSeries().setPostCount(post.getSeries().getPostCount() - 1);
+                seriesRepository.save(post.getSeries());
+            }
+
             post.setSeries(series);
+            series.setPostCount(series.getPostCount() + 1);
+            seriesRepository.save(series);
         }
 
         return postRepository.save(post);
@@ -136,6 +148,13 @@ public class PostService {
 
         if (!post.isAuthor(author)) {
             throw new CustomException(ErrorType.AUTHORIZATION_ERROR, "작성자만 게시글을 삭제 할 수 있습니다.");
+        }
+
+        if (post.getSeries() != null) {
+            SeriesEntity series = post.getSeries();
+            series.setPostCount(series.getPostCount() - 1);
+            seriesRepository.save(series);
+            post.setSeries(null);
         }
 
         postRepository.deleteById(postId);

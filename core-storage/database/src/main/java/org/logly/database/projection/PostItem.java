@@ -17,6 +17,6 @@ public class PostItem {
     private Long userId;
     private String nickname;
     private String profileImageUrl;
-    private Long commentCount;
     private Long likeCount;
+    private Long commentCount;
 }

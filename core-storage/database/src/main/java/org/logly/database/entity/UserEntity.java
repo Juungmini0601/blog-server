@@ -39,4 +39,15 @@ public class UserEntity extends BaseEntity {
     public int hashCode() {
         return Objects.hashCode(userId);
     }
+
+    @PrePersist
+    void prePersist() {
+        if (this.followeeCount == null) {
+            this.followeeCount = 0L;
+        }
+
+        if (this.followerCount == null) {
+            this.followerCount = 0L;
+        }
+    }
 }

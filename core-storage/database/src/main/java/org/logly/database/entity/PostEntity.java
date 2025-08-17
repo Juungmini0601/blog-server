@@ -35,4 +35,19 @@ public class PostEntity extends BaseEntity {
     public boolean isAuthor(UserEntity userEntity) {
         return this.user.equals(userEntity);
     }
+
+    @PrePersist
+    void prePersist() {
+        if (this.likeCount == null) {
+            this.likeCount = 0L;
+        }
+
+        if (this.commentCount == null) {
+            this.commentCount = 0L;
+        }
+
+        if (this.viewCount == null) {
+            this.viewCount = 0L;
+        }
+    }
 }

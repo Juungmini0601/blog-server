@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS logly.series
     series_id  BIGSERIAL PRIMARY KEY,
     user_id    BIGINT       NOT NULL,
     name       VARCHAR(100) NOT NULL,
+    post_count BIGINT       NOT NULL DEFAULT 0,
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_series_user_id FOREIGN KEY (user_id) REFERENCES logly.users (user_id) ON DELETE CASCADE

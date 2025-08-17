@@ -54,7 +54,7 @@ public class CreatePostResponse {
                 .content(entity.getContent())
                 .thumbnailUrl(entity.getThumbnailUrl())
                 .isPublic(entity.getIsPublic())
-                .viewCount(0L) // TODO 리팩터링 예정
+                .viewCount(entity.getViewCount())
                 .seriesId(entity.getSeries() != null ? entity.getSeries().getSeriesId() : null)
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())

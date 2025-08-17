@@ -52,8 +52,8 @@ public class UpdatePostResponse {
                 .content(entity.getContent())
                 .thumbnailUrl(entity.getThumbnailUrl())
                 .isPublic(entity.getIsPublic())
-                .viewCount(0L) // TODO 수정 예정
-                .seriesId(entity.getSeries().getSeriesId())
+                .viewCount(entity.getViewCount())
+                .seriesId(entity.getSeries() != null ? entity.getSeries().getSeriesId() : null)
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

@@ -22,4 +22,13 @@ public class SeriesEntity extends BaseEntity {
     private UserEntity user;
 
     private String name;
+
+    private Long postCount;
+
+    @PrePersist
+    void prePersist() {
+        if (this.postCount == null) {
+            this.postCount = 0L;
+        }
+    }
 }
