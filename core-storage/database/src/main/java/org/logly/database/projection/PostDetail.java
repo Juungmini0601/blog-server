@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.logly.database.entity.PostEntity;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,5 +33,23 @@ public class PostDetail {
 
     public void setIsLiked(boolean isLiked) {
         this.isLiked = isLiked;
+    }
+
+    public static PostDetail from(PostEntity post) {
+        return PostDetail.builder()
+                .postId(post.getPostId())
+                .userId(post.getUser().getUserId())
+                .userNickname(post.getUser().getNickname())
+                .userProfileImageUrl(post.getUser().getProfileImageUrl())
+                .userIntroduction(post.getUser().getIntroduction())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .thumbnailUrl(post.getThumbnailUrl())
+                .isPublic(post.getIsPublic())
+                .likeCount(0L) // TODO 리팩토링 예정
+                .seriesId(post.getSeries() == null ? null : post.getSeries().getSeriesId())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .build();
     }
 }

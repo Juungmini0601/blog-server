@@ -2,20 +2,27 @@ package org.logly.database.entity;
 
 import jakarta.persistence.*;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "oauths")
 public class OAuthEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long oauthId;
 
-    private Long userId;
-    private String provider;
-    private String providerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
-    // For JPA
-    protected OAuthEntity() {}
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
+
+    private String providerId;
 }

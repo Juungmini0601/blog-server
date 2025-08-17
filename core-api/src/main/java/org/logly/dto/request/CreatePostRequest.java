@@ -3,14 +3,17 @@ package org.logly.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import org.logly.database.entity.PostEntity;
+import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreatePostRequest {
     @NotBlank(message = "제목은 필수 입력값입니다")
     @Size(max = 255, message = "제목은 255자를 초과할 수 없습니다")
@@ -26,30 +29,8 @@ public class CreatePostRequest {
 
     private Long seriesId;
 
-    public CreatePostRequest() {}
-
-    @Builder
-    public CreatePostRequest(String title, String content, String thumbnailUrl, boolean isPublic, Long seriesId) {
-        this.title = title;
-        this.content = content;
-        this.thumbnailUrl = thumbnailUrl;
-        this.isPublic = isPublic;
-        this.seriesId = seriesId;
-    }
-
     @JsonProperty("isPublic")
     public boolean isPublic() {
         return isPublic;
-    }
-
-    public PostEntity toEntity() {
-        return PostEntity.builder()
-                .title(title)
-                .content(content)
-                .thumbnailUrl(thumbnailUrl)
-                .isPublic(isPublic)
-                .seriesId(seriesId)
-                .viewCount(0L)
-                .build();
     }
 }

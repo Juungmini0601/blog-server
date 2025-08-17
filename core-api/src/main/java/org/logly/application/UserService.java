@@ -8,9 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.logly.database.entity.UserEntity;
 import org.logly.database.repository.UserRepository;
+import org.logly.dto.request.CreateUserRequest;
 import org.logly.dto.request.UpdateUserRequest;
 import org.logly.error.CustomException;
 import org.logly.error.ErrorType;
+import org.logly.security.model.CustomUserDetails;
 
 @Slf4j
 @Service
@@ -24,13 +26,19 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity register(UserEntity user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new CustomException(ErrorType.VALIDATION_ERROR, String.format("%s는 이미 가입된 이메일 입니다", user.getEmail()));
+    public UserEntity register(CreateUserRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new CustomException(
+                    ErrorType.VALIDATION_ERROR, String.format("%s는 이미 가입된 이메일 입니다", request.getEmail()));
         }
 
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        UserEntity user = UserEntity.builder()
+                .email(request.getEmail())
+                .nickname(request.getNickname())
+                .password(encodedPassword)
+                .build();
+
         return userRepository.save(user);
     }
 
@@ -40,8 +48,8 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity update(Long userId, UpdateUserRequest request) {
-        UserEntity userEntity = userRepository.findByIdOrElseThrow(userId);
+    public UserEntity update(CustomUserDetails details, UpdateUserRequest request) {
+        UserEntity userEntity = userRepository.findByIdOrElseThrow(details.getUserId());
         userEntity.setNickname(request.getNickname());
         userEntity.setProfileImageUrl(request.getProfileImageUrl());
         userEntity.setGithubUrl(request.getGithubUrl());
@@ -51,7 +59,7 @@ public class UserService {
     }
 
     @Transactional
-    public void remove(Long userId) {
-        userRepository.deleteById(userId);
+    public void remove(CustomUserDetails details) {
+        userRepository.deleteById(details.getUserId());
     }
 }

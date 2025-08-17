@@ -49,13 +49,13 @@ public class CreatePostResponse {
     public static CreatePostResponse fromEntity(PostEntity entity) {
         return CreatePostResponse.builder()
                 .postId(entity.getPostId())
-                .userId(entity.getUserId())
+                .userId(entity.getUser().getUserId())
                 .title(entity.getTitle())
                 .content(entity.getContent())
                 .thumbnailUrl(entity.getThumbnailUrl())
                 .isPublic(entity.getIsPublic())
-                .viewCount(entity.getViewCount())
-                .seriesId(entity.getSeriesId())
+                .viewCount(0L) // TODO 리팩터링 예정
+                .seriesId(entity.getSeries() != null ? entity.getSeries().getSeriesId() : null)
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

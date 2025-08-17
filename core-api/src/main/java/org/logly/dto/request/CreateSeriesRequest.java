@@ -3,23 +3,15 @@ package org.logly.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import lombok.Getter;
+import lombok.*;
 
-import org.logly.database.entity.SeriesEntity;
-
+@Builder
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class CreateSeriesRequest {
     @NotBlank
     @Size(min = 2, max = 100)
     private String name;
-
-    public CreateSeriesRequest() {}
-
-    public CreateSeriesRequest(String name) {
-        this.name = name;
-    }
-
-    public SeriesEntity toEntity() {
-        return SeriesEntity.builder().name(name).build();
-    }
 }

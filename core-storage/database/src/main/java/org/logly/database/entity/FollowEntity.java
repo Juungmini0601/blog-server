@@ -2,33 +2,25 @@ package org.logly.database.entity;
 
 import jakarta.persistence.*;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Table(name = "follows")
 public class FollowEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long followId;
 
-    private Long followerId;
-    private Long followeeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "followee_id")
+    @ToString.Exclude
+    private UserEntity followee;
 
-    protected FollowEntity() {}
-
-    @Builder
-    public FollowEntity(Long followId, Long followerId, Long followeeId) {
-        this.followId = followId;
-        this.followerId = followerId;
-        this.followeeId = followeeId;
-    }
-
-    public static FollowEntity of(Long followerId, Long followeeId) {
-        return FollowEntity.builder()
-                .followerId(followerId)
-                .followeeId(followeeId)
-                .build();
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "follower_id")
+    private UserEntity follower;
 }

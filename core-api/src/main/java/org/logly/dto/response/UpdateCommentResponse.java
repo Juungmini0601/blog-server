@@ -38,8 +38,8 @@ public class UpdateCommentResponse {
     public static UpdateCommentResponse fromEntity(CommentEntity entity) {
         return UpdateCommentResponse.builder()
                 .commentId(entity.getCommentId())
-                .postId(entity.getPostId())
-                .userId(entity.getUserId())
+                .postId(entity.getPost().getPostId())
+                .userId(entity.getUser().getUserId())
                 .content(entity.getContent())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())

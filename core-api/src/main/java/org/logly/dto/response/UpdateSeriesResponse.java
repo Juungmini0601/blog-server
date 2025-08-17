@@ -28,7 +28,7 @@ public class UpdateSeriesResponse {
     public static UpdateSeriesResponse fromEntity(SeriesEntity entity) {
         return UpdateSeriesResponse.builder()
                 .seriesId(entity.getSeriesId())
-                .userId(entity.getUserId())
+                .userId(entity.getUser().getUserId())
                 .name(entity.getName())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())

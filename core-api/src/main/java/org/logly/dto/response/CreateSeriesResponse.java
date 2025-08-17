@@ -32,7 +32,7 @@ public class CreateSeriesResponse {
     public static CreateSeriesResponse fromEntity(SeriesEntity entity) {
         return CreateSeriesResponse.builder()
                 .seriesId(entity.getSeriesId())
-                .userId(entity.getUserId())
+                .userId(entity.getUser().getUserId())
                 .name(entity.getName())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())

@@ -30,8 +30,8 @@ public class CreatePostLikeResponse {
     public static CreatePostLikeResponse fromEntity(PostLikeEntity entity) {
         return builder()
                 .postLikeId(entity.getPostLikeId())
-                .postId(entity.getPostId())
-                .userId(entity.getUserId())
+                .postId(entity.getPost().getPostId())
+                .userId(entity.getUser().getUserId())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

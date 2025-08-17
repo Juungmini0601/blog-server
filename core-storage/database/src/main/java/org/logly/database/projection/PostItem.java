@@ -2,13 +2,21 @@ package org.logly.database.projection;
 
 import java.time.LocalDateTime;
 
-public record PostItem(
-        Long postId,
-        String thumbnailUrl,
-        LocalDateTime createdAt,
-        String content,
-        Long userId,
-        String nickname,
-        String profileImageUrl,
-        Long commentCount,
-        Long likeCount) {}
+import lombok.*;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class PostItem {
+    private Long postId;
+    private String thumbnailUrl;
+    private LocalDateTime createdAt;
+    private String content;
+    private Long userId;
+    private String nickname;
+    private String profileImageUrl;
+    private Long commentCount;
+    private Long likeCount;
+}

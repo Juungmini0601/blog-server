@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import lombok.RequiredArgsConstructor;
+
 import org.logly.application.CommentService;
 import org.logly.database.entity.CommentEntity;
 import org.logly.database.projection.CommentItem;
@@ -17,13 +19,10 @@ import org.logly.response.CursorResponse;
 import org.logly.security.model.CustomUserDetails;
 
 @RestController
+@RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
-
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
 
     @GetMapping("/v1/comments/{postId}")
     public CursorResponse<CommentItem, Long> getComments(
@@ -39,7 +38,7 @@ public class CommentController {
     public ApiResponse<CreateCommentResponse> create(
             Authentication authentication, @RequestBody @Valid CreateCommentRequest request) {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        CommentEntity comment = commentService.create(customUserDetails.getUserId(), request.toEntity());
+        CommentEntity comment = commentService.create(customUserDetails, request);
 
         return ApiResponse.success(CreateCommentResponse.fromEntity(comment));
     }
@@ -50,7 +49,7 @@ public class CommentController {
             @PathVariable Long commentId,
             @RequestBody @Valid UpdateCommentRequest request) {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        CommentEntity comment = commentService.update(customUserDetails.getUserId(), request.toEntity(commentId));
+        CommentEntity comment = commentService.update(customUserDetails, request.toEntity(commentId));
 
         return ApiResponse.success(UpdateCommentResponse.fromEntity(comment));
     }
@@ -58,7 +57,7 @@ public class CommentController {
     @DeleteMapping("/v1/comments/{commentId}")
     public ApiResponse<?> delete(Authentication authentication, @PathVariable Long commentId) {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        commentService.remove(customUserDetails.getUserId(), commentId);
+        commentService.remove(customUserDetails, commentId);
 
         return ApiResponse.success();
     }

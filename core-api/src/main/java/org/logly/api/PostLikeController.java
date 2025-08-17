@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
+
 import org.logly.application.PostLikeService;
 import org.logly.database.entity.PostLikeEntity;
 import org.logly.dto.response.CreatePostLikeResponse;
@@ -13,13 +15,10 @@ import org.logly.response.ApiResponse;
 import org.logly.security.model.CustomUserDetails;
 
 @RestController
+@RequiredArgsConstructor
 public class PostLikeController {
 
     private final PostLikeService postLikeService;
-
-    public PostLikeController(PostLikeService postLikeService) {
-        this.postLikeService = postLikeService;
-    }
 
     @PostMapping("/v1/posts/{postId}/like")
     public ApiResponse<CreatePostLikeResponse> like(Authentication authentication, @PathVariable Long postId) {

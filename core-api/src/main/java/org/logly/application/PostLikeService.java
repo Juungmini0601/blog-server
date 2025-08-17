@@ -30,7 +30,7 @@ public class PostLikeService {
         UserEntity user = userRepository.findByIdOrElseThrow(userId);
         PostEntity post = postRepository.findByIdOrElseThrow(postId);
 
-        if (postLikeRepository.existsByPostIdAndUserId(postId, userId)) {
+        if (postLikeRepository.existsByPostAndUser(post, user)) {
             throw new CustomException(ErrorType.VALIDATION_ERROR, "이미 좋아요한 게시물 입니다.");
         }
 
@@ -40,7 +40,10 @@ public class PostLikeService {
 
     @Transactional
     public void disLike(Long userId, Long postId) {
-        PostLikeEntity like = postLikeRepository.findByPostIdAndUserIdOrElseThrow(postId, userId);
+        UserEntity user = userRepository.findByIdOrElseThrow(userId);
+        PostEntity post = postRepository.findByIdOrElseThrow(postId);
+        PostLikeEntity like = postLikeRepository.findByPostIdAndUserIdOrElseThrow(post, user);
+
         postLikeRepository.delete(like);
     }
 }

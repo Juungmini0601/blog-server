@@ -3,6 +3,14 @@ spring:
     activate:
       on-profile: local
 
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
   datasource:
     hikari:
       jdbc-url: jdbc:postgresql://${LOCAL_DATABASE_URL}/postgres?currentSchema=logly
@@ -18,23 +26,19 @@ spring:
       connection-test-query: SELECT 1
       leak-detection-threshold: 60000
 
-  sql:
-    init:
-      mode: never
-    log:
-      format: true
-    statements: true
-
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      default_schema: logly
-
 ---
 spring:
   config:
     activate:
       on-profile: test
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=logly
@@ -42,17 +46,19 @@ spring:
     password: qwer1234
     driver-class-name: org.postgresql.Driver
 
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      default_schema: logly
-      ddl-auto: create
-
 ---
 spring:
   config:
     activate:
       on-profile: prod
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
 
   datasource:
     hikari:
@@ -68,8 +74,3 @@ spring:
       # PostgreSQL 전용 설정
       connection-test-query: SELECT 1
       leak-detection-threshold: 60000
-
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      default_schema: logly

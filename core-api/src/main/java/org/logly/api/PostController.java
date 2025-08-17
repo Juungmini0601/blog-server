@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import lombok.RequiredArgsConstructor;
+
 import org.logly.application.PostService;
 import org.logly.database.entity.PostEntity;
 import org.logly.database.projection.PostDetail;
@@ -19,13 +21,10 @@ import org.logly.response.CursorResponse;
 import org.logly.security.model.CustomUserDetails;
 
 @RestController
+@RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
-
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
 
     @GetMapping("/v1/posts")
     public CursorResponse<PostItem, Long> getPosts(@RequestParam(required = false) Long lastPostId) {
@@ -36,6 +35,26 @@ public class PostController {
         return postService.getPostList(lastPostId);
     }
 
+    @GetMapping("/v1/posts/users/{userId}")
+    public CursorResponse<PostItem, Long> getUserPosts(
+            @RequestParam(required = false) Long lastPostId, @PathVariable Long userId) {
+        if (lastPostId == null) {
+            lastPostId = Long.MAX_VALUE;
+        }
+
+        return postService.getPostListByUserId(userId, lastPostId);
+    }
+
+    @GetMapping("/v1/posts/series/{seriesId}")
+    public CursorResponse<PostItem, Long> getSeriesPosts(
+            @RequestParam(required = false) Long lastPostId, @PathVariable Long seriesId) {
+        if (lastPostId == null) {
+            lastPostId = Long.MAX_VALUE;
+        }
+
+        return postService.getPostListBySeriesId(seriesId, lastPostId);
+    }
+
     @GetMapping("/v1/posts/{postId}")
     public ApiResponse<GetPostResponse> getPostById(@PathVariable Long postId, Authentication authentication) {
         if (authentication == null) {
@@ -43,7 +62,7 @@ public class PostController {
         }
 
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        PostDetail post = postService.getById(postId, details.getUserId());
+        PostDetail post = postService.getById(postId, details);
 
         return ApiResponse.success(GetPostResponse.fromEntity(post));
     }
@@ -52,9 +71,8 @@ public class PostController {
     public ApiResponse<CreatePostResponse> create(
             Authentication authentication, @Valid @RequestBody CreatePostRequest request) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        PostEntity postRequest = request.toEntity();
+        PostEntity createdPost = postService.create(details, request);
 
-        PostEntity createdPost = postService.create(details.getUserId(), postRequest);
         return ApiResponse.success(CreatePostResponse.fromEntity(createdPost));
     }
 
@@ -62,16 +80,15 @@ public class PostController {
     public ApiResponse<UpdatePostResponse> update(
             Authentication authentication, @PathVariable Long postId, @Valid @RequestBody UpdatePostRequest request) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        PostEntity postRequest = request.toEntity(postId);
+        PostEntity updatedPost = postService.update(details, postId, request);
 
-        PostEntity updatedPost = postService.update(details.getUserId(), postRequest);
         return ApiResponse.success(UpdatePostResponse.fromEntity(updatedPost));
     }
 
     @DeleteMapping("/v1/posts/{postId}")
     public ApiResponse<?> delete(Authentication authentication, @PathVariable Long postId) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        postService.remove(details.getUserId(), postId);
+        postService.remove(details, postId);
 
         return ApiResponse.success();
     }

@@ -1,19 +1,16 @@
 package org.logly.database.repository;
 
-import java.util.Optional;
+import java.util.List;
 
-import org.logly.database.projection.PostDetail;
-import org.logly.error.CustomException;
-import org.logly.error.ErrorType;
+import org.logly.database.entity.SeriesEntity;
+import org.logly.database.projection.PostItem;
 
 public interface PostRepositoryCustom {
-    void setSeriesIdNullBySeriesId(Long seriesId);
+    public void setSeriesIdNullBySeries(SeriesEntity series);
 
-    Optional<PostDetail> findPostDetailById(Long postId);
+    List<PostItem> findPostItemsByUserId(Long userId, Long lastPostId);
 
-    default PostDetail findPostDetailByIdOrElseThrow(Long postId) {
-        return findPostDetailById(postId)
-                .orElseThrow(() -> new CustomException(
-                        ErrorType.VALIDATION_ERROR, String.format("게시글을 찾을 수 없습니다 ID: [%d]", postId)));
-    }
+    List<PostItem> findPostItemsBySeriesId(Long seriesId, Long lastPostId);
+
+    List<PostItem> findPosts(Long lastPostId);
 }

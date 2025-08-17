@@ -8,7 +8,7 @@ import org.logly.error.CustomException;
 import org.logly.error.ErrorType;
 
 @Repository
-public interface SeriesRepository extends CrudRepository<SeriesEntity, Long> {
+public interface SeriesRepository extends CrudRepository<SeriesEntity, Long>, SeriesRepositoryCustom {
     default SeriesEntity findByIdOrElseThrow(Long seriesId) {
         return findById(seriesId)
                 .orElseThrow(() -> new CustomException(

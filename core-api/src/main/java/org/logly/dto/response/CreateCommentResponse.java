@@ -2,12 +2,17 @@ package org.logly.dto.response;
 
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import org.logly.database.entity.CommentEntity;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreateCommentResponse {
     private Long commentId;
     private Long postId;
@@ -17,29 +22,11 @@ public class CreateCommentResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public CreateCommentResponse() {}
-
-    @Builder
-    public CreateCommentResponse(
-            Long commentId,
-            Long postId,
-            Long userId,
-            String content,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt) {
-        this.commentId = commentId;
-        this.postId = postId;
-        this.userId = userId;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
     public static CreateCommentResponse fromEntity(CommentEntity entity) {
         return CreateCommentResponse.builder()
                 .commentId(entity.getCommentId())
-                .postId(entity.getPostId())
-                .userId(entity.getUserId())
+                .postId(entity.getPost().getPostId())
+                .userId(entity.getUser().getUserId())
                 .content(entity.getContent())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())

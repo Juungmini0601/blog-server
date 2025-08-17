@@ -17,6 +17,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import org.logly.AbstractTestContainerTest;
 import org.logly.database.entity.UserEntity;
+import org.logly.database.repository.CommentRepository;
+import org.logly.database.repository.PostRepository;
+import org.logly.database.repository.SeriesRepository;
 import org.logly.database.repository.UserRepository;
 import org.logly.dto.request.CreateCommentRequest;
 import org.logly.dto.request.CreatePostRequest;
@@ -37,10 +40,22 @@ public class CommentControllerTest extends AbstractTestContainerTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PostRepository postRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
+
+    @Autowired
+    SeriesRepository seriesRepository;
+
     @AfterEach
     void tearDown() {
         // TODO 간혹 데이터베이스 초기화가 제대로 이루어지지 않는 경우가 있다.
         // MockMVC, JPA, Transactional간의 상관관계에 대해서 제대로 학습이 필요하다.
+        commentRepository.deleteAll();
+        postRepository.deleteAll();
+        seriesRepository.deleteAll();
         userRepository.deleteAll();
     }
 

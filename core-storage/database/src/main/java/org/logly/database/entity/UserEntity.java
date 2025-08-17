@@ -1,14 +1,18 @@
 package org.logly.database.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @ToString(exclude = "password")
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Setter
 @Table(name = "users")
 public class UserEntity extends BaseEntity {
     @Id
@@ -21,44 +25,18 @@ public class UserEntity extends BaseEntity {
     private String profileImageUrl;
     private String githubUrl;
     private String introduction;
+    private Long followerCount;
+    private Long followeeCount;
 
-    protected UserEntity() {}
-
-    @Builder
-    public UserEntity(
-            Long userId,
-            String email,
-            String nickname,
-            String password,
-            String profileImageUrl,
-            String githubUrl,
-            String introduction) {
-        this.userId = userId;
-        this.email = email;
-        this.nickname = nickname;
-        this.password = password;
-        this.profileImageUrl = profileImageUrl;
-        this.githubUrl = githubUrl;
-        this.introduction = introduction;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return Objects.equals(userId, that.userId);
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
-    }
-
-    public void setGithubUrl(String githubUrl) {
-        this.githubUrl = githubUrl;
-    }
-
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(userId);
     }
 }

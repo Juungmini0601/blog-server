@@ -5,41 +5,51 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
 import org.logly.database.entity.CommentEntity;
+import org.logly.database.entity.PostEntity;
 import org.logly.database.entity.UserEntity;
 import org.logly.database.projection.CommentItem;
 import org.logly.database.repository.CommentRepository;
+import org.logly.database.repository.PostRepository;
 import org.logly.database.repository.UserRepository;
+import org.logly.dto.request.CreateCommentRequest;
 import org.logly.error.CustomException;
 import org.logly.error.ErrorType;
 import org.logly.response.CursorResponse;
+import org.logly.security.model.CustomUserDetails;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
     private static final int PAGE_SIZE = 20;
 
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository) {
-        this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
+    @Transactional
+    public CommentEntity create(CustomUserDetails details, CreateCommentRequest request) {
+        UserEntity user = userRepository.findByIdOrElseThrow(details.getUserId());
+        PostEntity post = postRepository.findByIdOrElseThrow(request.getPostId());
+
+        CommentEntity comment = CommentEntity.builder()
+                .content(request.getContent())
+                .post(post)
+                .user(user)
+                .build();
+
+        return commentRepository.save(comment);
     }
 
     @Transactional
-    public CommentEntity create(Long userId, CommentEntity commentEntity) {
-        UserEntity user = userRepository.findByIdOrElseThrow(userId);
-        commentEntity.setUser(user);
-
-        return commentRepository.save(commentEntity);
-    }
-
-    @Transactional
-    public CommentEntity update(Long requestUserId, CommentEntity commentEntity) {
+    public CommentEntity update(CustomUserDetails details, CommentEntity commentEntity) {
+        UserEntity requester = userRepository.findByIdOrElseThrow(details.getUserId());
         CommentEntity comment = commentRepository.findByIdOrElseThrow(commentEntity.getCommentId());
 
-        if (!comment.isOwner(requestUserId)) {
+        if (!requester.equals(comment.getUser())) {
             throw new CustomException(ErrorType.AUTHORIZATION_ERROR, "작성자만 수정 할 수 있습니다.");
         }
 
@@ -49,10 +59,11 @@ public class CommentService {
     }
 
     @Transactional
-    public void remove(Long userId, Long commentId) {
+    public void remove(CustomUserDetails details, Long commentId) {
+        UserEntity requester = userRepository.findByIdOrElseThrow(details.getUserId());
         CommentEntity comment = commentRepository.findByIdOrElseThrow(commentId);
 
-        if (!comment.isOwner(userId)) {
+        if (!requester.equals(comment.getUser())) {
             throw new CustomException(ErrorType.AUTHORIZATION_ERROR, "작성자만 삭제 할 수 있습니다.");
         }
 

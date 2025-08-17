@@ -47,13 +47,13 @@ public class UpdatePostResponse {
     public static UpdatePostResponse fromEntity(PostEntity entity) {
         return UpdatePostResponse.builder()
                 .postId(entity.getPostId())
-                .userId(entity.getUserId())
+                .userId(entity.getUser().getUserId())
                 .title(entity.getTitle())
                 .content(entity.getContent())
                 .thumbnailUrl(entity.getThumbnailUrl())
                 .isPublic(entity.getIsPublic())
-                .viewCount(entity.getViewCount())
-                .seriesId(entity.getSeriesId())
+                .viewCount(0L) // TODO 수정 예정
+                .seriesId(entity.getSeries().getSeriesId())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
