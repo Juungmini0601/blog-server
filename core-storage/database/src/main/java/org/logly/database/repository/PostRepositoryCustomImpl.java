@@ -31,6 +31,20 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
+    public List<PostItem> findPosts(Long lastPostId) {
+        QPostEntity post = QPostEntity.postEntity;
+
+        return queryFactory
+                .select(createPostItemProjection(post))
+                .from(post)
+                .join(post.user)
+                .where(post.postId.lt(lastPostId), post.isPublic.isTrue())
+                .orderBy(post.postId.desc())
+                .limit(20)
+                .fetch();
+    }
+
+    @Override
     public List<PostItem> findPostItemsByUser(UserEntity user, Long lastPostId) {
         QPostEntity post = QPostEntity.postEntity;
 
@@ -70,19 +84,5 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 post.user.profileImageUrl,
                 post.commentCount,
                 post.likeCount);
-    }
-
-    @Override
-    public List<PostItem> findPosts(Long lastPostId) {
-        QPostEntity post = QPostEntity.postEntity;
-
-        return queryFactory
-                .select(createPostItemProjection(post))
-                .from(post)
-                .join(post.user)
-                .where(post.postId.lt(lastPostId), post.isPublic.isTrue())
-                .orderBy(post.postId.desc())
-                .limit(20)
-                .fetch();
     }
 }
