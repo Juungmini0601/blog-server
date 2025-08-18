@@ -1,14 +1,14 @@
 package org.logly.database.repository;
 
-import org.logly.database.entity.UserEntity;
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import org.logly.database.entity.SeriesEntity;
+import org.logly.database.entity.UserEntity;
 import org.logly.error.CustomException;
 import org.logly.error.ErrorType;
-
-import java.util.List;
 
 @Repository
 public interface SeriesRepository extends CrudRepository<SeriesEntity, Long>, SeriesRepositoryCustom {

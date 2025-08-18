@@ -1,0 +1,18 @@
+spring.application.name: logly-batch
+spring.profiles.active: local
+
+spring:
+  config:
+    import:
+      - logging.yml
+      - database.yml
+
+---
+spring.config.activate.on-profile: local
+
+
+
+
+---
+spring.config.activate.on-profile: prod
+

@@ -43,7 +43,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public CursorResponse<PostItem, Long> getPostListByUserId(Long lastPostId, Long userId) {
+    public CursorResponse<PostItem, Long> getPostListByUserId(Long userId, Long lastPostId) {
         UserEntity user = userRepository.findByIdOrElseThrow(userId);
         List<PostItem> postItems = postRepository.findPostItemsByUser(user, lastPostId);
 
@@ -57,7 +57,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public CursorResponse<PostItem, Long> getPostListBySeriesId(Long lastPostId, Long seriesId) {
+    public CursorResponse<PostItem, Long> getPostListBySeriesId(Long seriesId, Long lastPostId) {
         SeriesEntity series = seriesRepository.findByIdOrElseThrow(seriesId);
         List<PostItem> postItems = postRepository.findPostItemsBySeries(series, lastPostId);
 

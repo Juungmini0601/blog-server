@@ -9,7 +9,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @Configuration
 public class QuerydslConfig {
-
     @Bean
     public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
         return new JPAQueryFactory(entityManager);

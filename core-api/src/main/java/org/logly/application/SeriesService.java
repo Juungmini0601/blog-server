@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.logly.database.entity.SeriesEntity;
 import org.logly.database.entity.UserEntity;
-import org.logly.database.projection.SeriesItem;
 import org.logly.database.repository.PostRepository;
 import org.logly.database.repository.SeriesRepository;
 import org.logly.database.repository.UserRepository;
