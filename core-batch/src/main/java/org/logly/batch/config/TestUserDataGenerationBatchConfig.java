@@ -9,7 +9,6 @@ import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -40,7 +39,6 @@ public class TestUserDataGenerationBatchConfig {
     }
 
     @Bean
-    @StepScope
     public Step createUsersStep(
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
@@ -55,14 +53,12 @@ public class TestUserDataGenerationBatchConfig {
     }
 
     @Bean
-    @StepScope
     public ItemReader<UserEntity> userReader() {
         List<UserEntity> users = generateUsers();
         return new ListItemReader<>(users);
     }
 
     @Bean
-    @StepScope
     public ItemWriter<UserEntity> userWriter(EntityManagerFactory entityManagerFactory) {
         JpaItemWriter<UserEntity> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(entityManagerFactory);
@@ -70,7 +66,6 @@ public class TestUserDataGenerationBatchConfig {
     }
 
     @Bean
-    @StepScope
     public ChunkListener userChunkListener() {
         return new ChunkListener() {
             private final AtomicLong processedCount = new AtomicLong(0);
