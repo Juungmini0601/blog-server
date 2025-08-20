@@ -1,4 +1,5 @@
 dependencies {
+    implementation project(':core-support:common')
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     // Session Redis

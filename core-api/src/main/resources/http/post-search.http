@@ -1,2 +1,2 @@
 # 검색 API
-GET http://localhost:8080/v1/posts/search?keyword=그하하
+GET http://localhost:8080/v1/posts/search?keyword=짜장

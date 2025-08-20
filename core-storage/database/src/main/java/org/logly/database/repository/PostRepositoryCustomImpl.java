@@ -21,6 +21,23 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
+    public List<PostItem> searchPosts(String keyword, Long lastPostId) {
+        QPostEntity post = QPostEntity.postEntity;
+
+        return queryFactory
+                .select(createPostItemProjection(post))
+                .from(post)
+                .join(post.user)
+                .where(
+                        post.postId.lt(lastPostId),
+                        post.isPublic.isTrue(),
+                        post.content.contains(keyword).or(post.title.contains(keyword)))
+                .orderBy(post.postId.desc())
+                .limit(20)
+                .fetch();
+    }
+
+    @Override
     public void setSeriesIdNullBySeries(SeriesEntity series) {
         QPostEntity post = QPostEntity.postEntity;
         queryFactory

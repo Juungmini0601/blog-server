@@ -14,4 +14,6 @@ public interface PostRepositoryCustom {
     List<PostItem> findPostItemsBySeries(SeriesEntity series, Long lastPostId);
 
     List<PostItem> findPosts(Long lastPostId);
+
+    List<PostItem> searchPosts(String keyword, Long lastPostId);
 }
