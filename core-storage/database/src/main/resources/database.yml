@@ -18,8 +18,8 @@ spring:
       password: ${LOCAL_DATABASE_PASSWORD}
       driver-class-name: org.postgresql.Driver
       pool-name: LoglyConnectionPool
-      minimum-idle: 10 # 최소 커넥션
-      maximum-pool-size: 50 # 최대 커넥션
+      minimum-idle: 100 # 최소 커넥션
+      maximum-pool-size: 100 # 최대 커넥션
       idle-timeout: 60000
       connection-timeout: 30000
       # PostgreSQL 전용 설정
