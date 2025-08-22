@@ -77,6 +77,7 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers(
                                         HttpMethod.GET,
+                                        "/actuator/**",
                                         "/v1/posts/**",
                                         "/v1/comments/**",
                                         "/v1/followees/**",
