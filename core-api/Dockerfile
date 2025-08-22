@@ -17,7 +17,7 @@ COPY core-support core-support/
 
 # 어플리케이션 빌드
 RUN chmod +x ./gradlew
-RUN ./gradlew :core-api:bootJar --no-daemon
+RUN ./gradlew :core-api:bootJar --no-daemon -x test
 
 # 런타임
 FROM eclipse-temurin:21-jre-alpine
