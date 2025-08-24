@@ -1,6 +1,7 @@
 ### Project Ignore
 *.private.env.json
 *.env
+docker/data/mysql
 docker/**/volume/
 TODO.md
 

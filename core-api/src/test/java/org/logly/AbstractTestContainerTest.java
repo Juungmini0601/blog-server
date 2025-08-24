@@ -10,7 +10,8 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
@@ -33,16 +34,16 @@ public abstract class AbstractTestContainerTest {
     protected ObjectMapper objectMapper = new ObjectMapper();
 
     static final GenericContainer<?> redis;
-    static final PostgreSQLContainer<?> postgresql;
+    static final MySQLContainer<?> mysql;
     static final String REDIS_PASSWORD = "qwer1234";
 
     static {
-        postgresql = new PostgreSQLContainer<>(DockerImageName.parse("postgres:17.4"))
-                .withDatabaseName("postgres")
-                .withUsername("test_user")
-                .withPassword("qwer1234")
-                .withReuse(true);
-        postgresql.start();
+        mysql = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.40"))
+                .withDatabaseName("logly")
+                .withUsername("root")
+                .withReuse(true)
+                .waitingFor(Wait.forListeningPort());
+        mysql.start();
 
         redis = new GenericContainer<>(DockerImageName.parse("redis:7.4.2"))
                 .withCommand("redis-server", "--requirepass", REDIS_PASSWORD)
@@ -53,11 +54,10 @@ public abstract class AbstractTestContainerTest {
 
     @DynamicPropertySource
     static void dynamicProperties(DynamicPropertyRegistry registry) {
-        // PostgreSQL container properties
-        registry.add("spring.datasource.url", () -> postgresql.getJdbcUrl() + "?currentSchema=logly");
-        registry.add("spring.datasource.username", postgresql::getUsername);
-        registry.add("spring.datasource.password", postgresql::getPassword);
-        registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
+        // MySQL container properties
+        registry.add("spring.datasource.url", mysql::getJdbcUrl);
+        registry.add("spring.datasource.username", mysql::getUsername);
+        registry.add("spring.datasource.password", mysql::getPassword);
 
         // Redis container properties
         registry.add("spring.data.redis.host", redis::getHost);

@@ -36,6 +36,8 @@ public class ApiControllerAdvice {
                     .body(errorResponse);
             case AUTHORIZATION_ERROR -> ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(errorResponse);
+            case TOO_MANY_REQUEST -> ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(errorResponse);
             case INTERNAL_SERVER_ERROR -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(errorResponse);
         };

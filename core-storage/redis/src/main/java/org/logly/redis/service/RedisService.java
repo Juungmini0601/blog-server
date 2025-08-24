@@ -3,6 +3,7 @@ package org.logly.redis.service;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -55,5 +56,24 @@ public class RedisService {
 
     public void delete(String key) {
         redisTemplate.delete(key);
+    }
+
+    public boolean tryAcquireSemaphore(String key, int maxConcurrent, int ttlSeconds) {
+        Long current = redisTemplate.opsForValue().increment(key);
+
+        if (current != null && current == 1) {
+            redisTemplate.expire(key, ttlSeconds, TimeUnit.SECONDS);
+        }
+
+        if (current == null || current > maxConcurrent) {
+            redisTemplate.opsForValue().decrement(key);
+            return false;
+        }
+
+        return true;
+    }
+
+    public void releaseSemaphore(String key) {
+        redisTemplate.opsForValue().decrement(key);
     }
 }

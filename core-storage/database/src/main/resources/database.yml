@@ -8,23 +8,21 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
-        format_sql: true
-        show_sql: true
+        format_sql: false
+        show_sql: false
+      jakarta.persistence.query.timeout: 3000
 
   datasource:
     hikari:
-      jdbc-url: jdbc:postgresql://${LOCAL_DATABASE_URL}/postgres?currentSchema=logly
+      jdbc-url: jdbc:postgresql://${LOCAL_DATABASE_URL}/logly
       username: ${LOCAL_DATABASE_USERNAME}
       password: ${LOCAL_DATABASE_PASSWORD}
-      driver-class-name: org.postgresql.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
       pool-name: LoglyConnectionPool
       minimum-idle: 100 # 최소 커넥션
       maximum-pool-size: 100 # 최대 커넥션
       idle-timeout: 60000
-      connection-timeout: 30000
-      # PostgreSQL 전용 설정
-      connection-test-query: SELECT 1
-      leak-detection-threshold: 60000
+      connection-timeout: 3000
 
 ---
 spring:
@@ -41,10 +39,10 @@ spring:
         show_sql: true
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=logly
+    url: jdbc:postgresql://localhost:3306/logly
     username: jungmini
     password: qwer1234
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 ---
 spring:
@@ -62,15 +60,12 @@ spring:
 
   datasource:
     hikari:
-      jdbc-url: jdbc:postgresql://${PROD_DATABASE_URL}/postgres?currentSchema=logly
+      jdbc-url: jdbc:postgresql://${PROD_DATABASE_URL}/logly
       username: ${PROD_DATABASE_USERNAME}
       password: ${PROD_DATABASE_PASSWORD}
-      driver-class-name: org.postgresql.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
       pool-name: LoglyConnectionPool
       minimum-idle: 10 # 최소 커넥션
       maximum-pool-size: 50 # 최대 커넥션
       idle-timeout: 60000
       connection-timeout: 30000
-      # PostgreSQL 전용 설정
-      connection-test-query: SELECT 1
-      leak-detection-threshold: 60000
