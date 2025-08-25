@@ -125,6 +125,7 @@ CREATE TABLE IF NOT EXISTS post_views
     CONSTRAINT fk_post_view_user_id FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
+
 CREATE TABLE IF NOT EXISTS comments
 (
     comment_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -133,7 +134,6 @@ CREATE TABLE IF NOT EXISTS comments
     content    TEXT     NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT comments_post_user_unique UNIQUE (post_id, user_id),
     CONSTRAINT fk_comment_post_id FOREIGN KEY (post_id) REFERENCES posts (post_id) ON DELETE CASCADE,
     CONSTRAINT fk_comment_user_id FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
@@ -146,7 +146,6 @@ CREATE TABLE IF NOT EXISTS comment_replies
     content          TEXT     NOT NULL,
     created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT comment_replies_comment_user_unique UNIQUE (comment_id, user_id),
     CONSTRAINT fk_comment_reply_comment_id FOREIGN KEY (comment_id) REFERENCES comments (comment_id) ON DELETE CASCADE,
     CONSTRAINT fk_comment_reply_user_id FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
