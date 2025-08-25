@@ -28,3 +28,11 @@ spring.config.activate.on-profile: test
 ---
 spring.config.activate.on-profile: prod
 
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: none # same site가 Lax로 나가서 로그인이 제대로 안됨
+        secure: true # SameStie=None을 사용할 때는 반드시 Secure=true
+        http-only: true
+
