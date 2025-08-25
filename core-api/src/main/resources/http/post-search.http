@@ -1,5 +1,5 @@
 # 검색 API
-GET http://localhost:8080/v1/posts/search?keyword=볶음밥
+GET http://localhost:8080/v1/posts
 
 ###
 

@@ -12,6 +12,7 @@ import lombok.*;
 public class PostItem {
     private Long postId;
     private String thumbnailUrl;
+    private String title;
     private LocalDateTime createdAt;
     private String content;
     private Long userId;

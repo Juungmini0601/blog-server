@@ -94,6 +94,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 PostItem.class,
                 post.postId,
                 post.thumbnailUrl,
+                post.title,
                 post.createdAt,
                 post.content,
                 post.user.userId,
