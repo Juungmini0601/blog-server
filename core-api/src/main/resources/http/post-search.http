@@ -1,2 +1,7 @@
 # 검색 API
 GET http://localhost:8080/v1/posts/search?keyword=볶음밥
+
+###
+
+# 댓글 조회 API
+GET http://localhost:8080/v1/comments/1
