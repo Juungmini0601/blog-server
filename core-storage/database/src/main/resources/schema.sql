@@ -61,9 +61,6 @@ CREATE TABLE IF NOT EXISTS posts
     thumbnail_url VARCHAR(255),
     is_public     BOOLEAN      NOT NULL DEFAULT TRUE,
     series_id     BIGINT,
-    view_count    BIGINT       NOT NULL DEFAULT 0,
-    like_count    BIGINT       NOT NULL DEFAULT 0,
-    comment_count BIGINT       NOT NULL DEFAULT 0,
     created_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_post_user_id FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
@@ -123,6 +120,17 @@ CREATE TABLE IF NOT EXISTS post_views
     CONSTRAINT post_views_post_user_unique UNIQUE (post_id, user_id),
     CONSTRAINT fk_post_view_post_id FOREIGN KEY (post_id) REFERENCES posts (post_id) ON DELETE CASCADE,
     CONSTRAINT fk_post_view_user_id FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS post_statistics
+(
+    post_id       BIGINT   NOT NULL PRIMARY KEY,
+    view_count    BIGINT   NOT NULL DEFAULT 0,
+    like_count    BIGINT   NOT NULL DEFAULT 0,
+    comment_count BIGINT   NOT NULL DEFAULT 0,
+    created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_post_statistics_post_id FOREIGN KEY (post_id) REFERENCES posts (post_id) ON DELETE CASCADE
 );
 
 
@@ -241,7 +249,6 @@ CREATE TABLE BATCH_JOB_EXECUTION_CONTEXT
         REFERENCES BATCH_JOB_EXECUTION (JOB_EXECUTION_ID)
 );
 
--- MySQL에서는 시퀀스 대신 AUTO_INCREMENT 사용하므로 별도 시퀀스 불필요
 
 -- Index
 CREATE INDEX idx_posts_pub_recent

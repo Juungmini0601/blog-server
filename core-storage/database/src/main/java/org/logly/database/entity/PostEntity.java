@@ -24,30 +24,15 @@ public class PostEntity extends BaseEntity {
     private String content;
     private String thumbnailUrl;
     private Boolean isPublic = true;
-    private Long viewCount;
-    private Long likeCount;
-    private Long commentCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "series_id", nullable = true)
     private SeriesEntity series;
 
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    private PostStatisticsEntity statistics;
+
     public boolean isAuthor(UserEntity userEntity) {
         return this.user.equals(userEntity);
-    }
-
-    @PrePersist
-    void prePersist() {
-        if (this.likeCount == null) {
-            this.likeCount = 0L;
-        }
-
-        if (this.commentCount == null) {
-            this.commentCount = 0L;
-        }
-
-        if (this.viewCount == null) {
-            this.viewCount = 0L;
-        }
     }
 }

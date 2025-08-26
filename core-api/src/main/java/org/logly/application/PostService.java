@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.logly.database.entity.PostEntity;
+import org.logly.database.entity.PostStatisticsEntity;
 import org.logly.database.entity.SeriesEntity;
 import org.logly.database.entity.UserEntity;
 import org.logly.database.projection.PostDetail;
@@ -74,6 +75,7 @@ public class PostService {
     public PostDetail getById(Long postId, CustomUserDetails details) {
         PostEntity post = postRepository.findByIdOrElseThrow(postId);
         PostDetail postDetail = PostDetail.from(post);
+
         if (details != null) {
             UserEntity requester = userRepository.findByIdOrElseThrow(details.getUserId());
             boolean isLiked = postLikeRepository.existsByPostAndUser(post, requester);
@@ -92,9 +94,6 @@ public class PostService {
                 .thumbnailUrl(request.getThumbnailUrl())
                 .isPublic(request.isPublic())
                 .user(author)
-                .commentCount(0L)
-                .likeCount(0L)
-                .viewCount(0L)
                 .build();
 
         if (request.getSeriesId() != null) {
@@ -109,7 +108,18 @@ public class PostService {
             seriesRepository.save(series);
         }
 
-        return postRepository.save(post);
+        PostEntity savedPost = postRepository.save(post);
+
+        PostStatisticsEntity statistics = PostStatisticsEntity.builder()
+                .post(savedPost)
+                .viewCount(0L)
+                .likeCount(0L)
+                .commentCount(0L)
+                .build();
+
+        savedPost.setStatistics(statistics);
+
+        return savedPost;
     }
 
     @Transactional

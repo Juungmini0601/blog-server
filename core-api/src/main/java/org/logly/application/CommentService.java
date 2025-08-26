@@ -35,7 +35,7 @@ public class CommentService {
         UserEntity user = userRepository.findByIdOrElseThrow(details.getUserId());
         PostEntity post = postRepository.findByIdOrElseThrow(request.getPostId());
         // TODO 동시성 문제 증분 업데이트 추가 예정
-        post.setCommentCount(post.getCommentCount() + 1);
+        //        post.setCommentCount(post.getStatistics().getCommentCount() + 1);
         postRepository.save(post);
 
         CommentEntity comment = CommentEntity.builder()
@@ -72,7 +72,7 @@ public class CommentService {
 
         PostEntity post = comment.getPost();
         // TODO 동시성 문제 증분 업데이트 추가 예정
-        post.setCommentCount(post.getCommentCount() - 1);
+        //        post.setCommentCount(post.getCommentCount() - 1);
         commentRepository.delete(comment);
     }
 

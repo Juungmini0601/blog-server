@@ -23,11 +23,13 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public List<PostItem> searchPosts(String keyword, Long lastPostId) {
         QPostEntity post = QPostEntity.postEntity;
+        QPostStatisticsEntity statistics = QPostStatisticsEntity.postStatisticsEntity;
 
         return queryFactory
-                .select(createPostItemProjection(post))
+                .select(createPostItemProjection(post, statistics))
                 .from(post)
                 .join(post.user)
+                .join(post.statistics, statistics)
                 .where(
                         post.postId.lt(lastPostId),
                         post.isPublic.isTrue(),
@@ -50,11 +52,13 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public List<PostItem> findPosts(Long lastPostId) {
         QPostEntity post = QPostEntity.postEntity;
+        QPostStatisticsEntity statistics = QPostStatisticsEntity.postStatisticsEntity;
 
         return queryFactory
-                .select(createPostItemProjection(post))
+                .select(createPostItemProjection(post, statistics))
                 .from(post)
                 .join(post.user)
+                .join(post.statistics, statistics)
                 .where(post.postId.lt(lastPostId), post.isPublic.isTrue())
                 .orderBy(post.postId.desc())
                 .limit(20)
@@ -64,11 +68,13 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public List<PostItem> findPostItemsByUser(UserEntity user, Long lastPostId) {
         QPostEntity post = QPostEntity.postEntity;
+        QPostStatisticsEntity statistics = QPostStatisticsEntity.postStatisticsEntity;
 
         return queryFactory
-                .select(createPostItemProjection(post))
+                .select(createPostItemProjection(post, statistics))
                 .from(post)
                 .join(post.user)
+                .join(post.statistics, statistics)
                 .where(post.postId.lt(lastPostId), post.isPublic.isTrue(), post.user.eq(user))
                 .orderBy(post.postId.desc())
                 .limit(20)
@@ -78,18 +84,20 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public List<PostItem> findPostItemsBySeries(SeriesEntity series, Long lastPostId) {
         QPostEntity post = QPostEntity.postEntity;
+        QPostStatisticsEntity statistics = QPostStatisticsEntity.postStatisticsEntity;
 
         return queryFactory
-                .select(createPostItemProjection(post))
+                .select(createPostItemProjection(post, statistics))
                 .from(post)
                 .join(post.user)
+                .join(post.statistics, statistics)
                 .where(post.postId.lt(lastPostId), post.isPublic.isTrue(), post.series.eq(series))
                 .orderBy(post.postId.desc())
                 .limit(20)
                 .fetch();
     }
 
-    private static QBean<PostItem> createPostItemProjection(QPostEntity post) {
+    private static QBean<PostItem> createPostItemProjection(QPostEntity post, QPostStatisticsEntity statistics) {
         return Projections.fields(
                 PostItem.class,
                 post.postId,
@@ -100,7 +108,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 post.user.userId,
                 post.user.nickname,
                 post.user.profileImageUrl,
-                post.commentCount,
-                post.likeCount);
+                statistics.commentCount,
+                statistics.likeCount);
     }
 }

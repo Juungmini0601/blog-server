@@ -46,7 +46,7 @@ public class PostDetail {
                 .content(post.getContent())
                 .thumbnailUrl(post.getThumbnailUrl())
                 .isPublic(post.getIsPublic())
-                .likeCount(post.getLikeCount())
+                .likeCount(post.getStatistics().getLikeCount())
                 .seriesId(post.getSeries() == null ? null : post.getSeries().getSeriesId())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
