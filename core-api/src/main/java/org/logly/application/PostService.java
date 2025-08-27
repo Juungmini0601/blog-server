@@ -112,9 +112,6 @@ public class PostService {
 
         PostStatisticsEntity statistics = PostStatisticsEntity.builder()
                 .post(savedPost)
-                .viewCount(0L)
-                .likeCount(0L)
-                .commentCount(0L)
                 .build();
 
         savedPost.setStatistics(statistics);

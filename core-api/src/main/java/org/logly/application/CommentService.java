@@ -71,7 +71,6 @@ public class CommentService {
 
         PostEntity post = comment.getPost();
 
-        // MySQL 증분 업데이트 사용으로 동시성 문제 해결
         postRepository.decrementCommentCount(post.getPostId());
         commentRepository.delete(comment);
     }

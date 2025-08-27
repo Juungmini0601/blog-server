@@ -1,5 +1,6 @@
 package org.logly.application;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,17 +14,11 @@ import org.logly.error.CustomException;
 import org.logly.error.ErrorType;
 
 @Service
+@RequiredArgsConstructor
 public class PostLikeService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
     private final UserRepository userRepository;
-
-    public PostLikeService(
-            PostRepository postRepository, PostLikeRepository postLikeRepository, UserRepository userRepository) {
-        this.postRepository = postRepository;
-        this.postLikeRepository = postLikeRepository;
-        this.userRepository = userRepository;
-    }
 
     @Transactional
     public PostLikeEntity like(Long userId, Long postId) {
@@ -35,8 +30,8 @@ public class PostLikeService {
         }
 
         postRepository.incrementLikeCount(postId);
-
         PostLikeEntity postLike = PostLikeEntity.of(post, user);
+
         return postLikeRepository.save(postLike);
     }
 
