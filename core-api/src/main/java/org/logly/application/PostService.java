@@ -110,9 +110,8 @@ public class PostService {
 
         PostEntity savedPost = postRepository.save(post);
 
-        PostStatisticsEntity statistics = PostStatisticsEntity.builder()
-                .post(savedPost)
-                .build();
+        PostStatisticsEntity statistics =
+                PostStatisticsEntity.builder().post(savedPost).build();
 
         savedPost.setStatistics(statistics);
 

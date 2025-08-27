@@ -1,8 +1,9 @@
 package org.logly.application;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 import org.logly.database.entity.PostEntity;
 import org.logly.database.entity.PostLikeEntity;
@@ -40,7 +41,7 @@ public class PostLikeService {
         UserEntity user = userRepository.findByIdOrElseThrow(userId);
         PostEntity post = postRepository.findByIdOrElseThrow(postId);
         PostLikeEntity like = postLikeRepository.findByPostIdAndUserIdOrElseThrow(post, user);
-        postRepository.decrementCommentCount(postId);
+        postRepository.decrementLikeCount(postId);
         postLikeRepository.delete(like);
     }
 }
