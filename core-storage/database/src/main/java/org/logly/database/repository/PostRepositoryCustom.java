@@ -7,7 +7,7 @@ import org.logly.database.entity.UserEntity;
 import org.logly.database.projection.PostItem;
 
 public interface PostRepositoryCustom {
-    public void setSeriesIdNullBySeries(SeriesEntity series);
+    void setSeriesIdNullBySeries(SeriesEntity series);
 
     List<PostItem> findPostItemsByUser(UserEntity user, Long lastPostId);
 
@@ -16,4 +16,16 @@ public interface PostRepositoryCustom {
     List<PostItem> findPosts(Long lastPostId);
 
     List<PostItem> searchPosts(String keyword, Long lastPostId);
+
+    void incrementCommentCount(Long postId);
+
+    void decrementCommentCount(Long postId);
+
+    void incrementViewCount(Long postId);
+
+    void decrementViewCount(Long postId);
+
+    void incrementLikeCount(Long postId);
+
+    void decrementLikeCount(Long postId);
 }

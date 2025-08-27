@@ -34,9 +34,8 @@ public class CommentService {
     public CommentEntity create(CustomUserDetails details, CreateCommentRequest request) {
         UserEntity user = userRepository.findByIdOrElseThrow(details.getUserId());
         PostEntity post = postRepository.findByIdOrElseThrow(request.getPostId());
-        // TODO 동시성 문제 증분 업데이트 추가 예정
-        //        post.setCommentCount(post.getStatistics().getCommentCount() + 1);
-        postRepository.save(post);
+
+        postRepository.incrementCommentCount(request.getPostId());
 
         CommentEntity comment = CommentEntity.builder()
                 .content(request.getContent())
@@ -71,8 +70,9 @@ public class CommentService {
         }
 
         PostEntity post = comment.getPost();
-        // TODO 동시성 문제 증분 업데이트 추가 예정
-        //        post.setCommentCount(post.getCommentCount() - 1);
+
+        // MySQL 증분 업데이트 사용으로 동시성 문제 해결
+        postRepository.decrementCommentCount(post.getPostId());
         commentRepository.delete(comment);
     }
 

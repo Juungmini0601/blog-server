@@ -26,7 +26,7 @@ public class PostEntity extends BaseEntity {
     private Boolean isPublic = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "series_id", nullable = true)
+    @JoinColumn(name = "series_id")
     private SeriesEntity series;
 
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)

@@ -20,9 +20,33 @@ public class PostStatisticsEntity extends BaseEntity {
     @JoinColumn(name = "post_id")
     private PostEntity post;
 
-    private Long viewCount = 0L;
-    private Long likeCount = 0L;
-    private Long commentCount = 0L;
+    private Long viewCount;
+    private Long likeCount;
+    private Long commentCount;
+
+    public void incrementViewCount() {
+        this.viewCount++;
+    }
+
+    public void incrementLikeCount() {
+        this.likeCount++;
+    }
+
+    public void incrementCommentCount() {
+        this.commentCount++;
+    }
+
+    public void decrementViewCount() {
+        this.viewCount--;
+    }
+
+    public void decrementLikeCount() {
+        this.likeCount--;
+    }
+
+    public void decrementCommentCount() {
+        this.commentCount--;
+    }
 
     @PrePersist
     void prePersist() {

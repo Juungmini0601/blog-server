@@ -97,6 +97,72 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public void incrementCommentCount(Long postId) {
+        QPostStatisticsEntity statistics = QPostStatisticsEntity.postStatisticsEntity;
+
+        queryFactory
+                .update(statistics)
+                .set(statistics.commentCount, statistics.commentCount.add(1))
+                .where(statistics.postId.eq(postId))
+                .execute();
+    }
+
+    @Override
+    public void decrementCommentCount(Long postId) {
+        QPostStatisticsEntity statistics = QPostStatisticsEntity.postStatisticsEntity;
+
+        queryFactory
+                .update(statistics)
+                .set(statistics.commentCount, statistics.commentCount.subtract(1))
+                .where(statistics.postId.eq(postId))
+                .execute();
+    }
+
+    @Override
+    public void incrementViewCount(Long postId) {
+        QPostStatisticsEntity statistics = QPostStatisticsEntity.postStatisticsEntity;
+
+        queryFactory
+                .update(statistics)
+                .set(statistics.viewCount, statistics.viewCount.add(1))
+                .where(statistics.postId.eq(postId))
+                .execute();
+    }
+
+    @Override
+    public void decrementViewCount(Long postId) {
+        QPostStatisticsEntity statistics = QPostStatisticsEntity.postStatisticsEntity;
+
+        queryFactory
+                .update(statistics)
+                .set(statistics.viewCount, statistics.viewCount.subtract(1))
+                .where(statistics.postId.eq(postId))
+                .execute();
+    }
+
+    @Override
+    public void incrementLikeCount(Long postId) {
+        QPostStatisticsEntity statistics = QPostStatisticsEntity.postStatisticsEntity;
+
+        queryFactory
+                .update(statistics)
+                .set(statistics.likeCount, statistics.likeCount.add(1))
+                .where(statistics.postId.eq(postId))
+                .execute();
+    }
+
+    @Override
+    public void decrementLikeCount(Long postId) {
+        QPostStatisticsEntity statistics = QPostStatisticsEntity.postStatisticsEntity;
+
+        queryFactory
+                .update(statistics)
+                .set(statistics.likeCount, statistics.likeCount.subtract(1))
+                .where(statistics.postId.eq(postId))
+                .execute();
+    }
+
     private static QBean<PostItem> createPostItemProjection(QPostEntity post, QPostStatisticsEntity statistics) {
         return Projections.fields(
                 PostItem.class,
