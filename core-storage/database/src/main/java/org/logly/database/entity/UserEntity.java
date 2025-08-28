@@ -25,8 +25,6 @@ public class UserEntity extends BaseEntity {
     private String profileImageUrl;
     private String githubUrl;
     private String introduction;
-    private Long followerCount;
-    private Long followeeCount;
 
     @Override
     public boolean equals(Object o) {
@@ -38,16 +36,5 @@ public class UserEntity extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hashCode(userId);
-    }
-
-    @PrePersist
-    void prePersist() {
-        if (this.followeeCount == null) {
-            this.followeeCount = 0L;
-        }
-
-        if (this.followerCount == null) {
-            this.followerCount = 0L;
-        }
     }
 }

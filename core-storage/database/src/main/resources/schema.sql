@@ -10,8 +10,6 @@ CREATE TABLE IF NOT EXISTS users
     profile_image_url VARCHAR(255),
     github_url        VARCHAR(255),
     introduction      VARCHAR(100),
-    follower_count    BIGINT       NOT NULL DEFAULT 0,
-    followee_count    BIGINT       NOT NULL DEFAULT 0,
     created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT users_email_unique UNIQUE (email)
@@ -27,18 +25,6 @@ CREATE TABLE IF NOT EXISTS oauths
     updated_at  DATETIME                        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT oauths_provider_id_unique UNIQUE (provider, provider_id),
     CONSTRAINT fk_oauth_user_id FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS follows
-(
-    follow_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
-    follower_id BIGINT   NOT NULL, -- 팔로우 당하는 유저의 아이디
-    followee_id BIGINT   NOT NULL, -- 팔로우 하는 유저의 아이디
-    created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT follows_follower_followee_unique UNIQUE (follower_id, followee_id),
-    CONSTRAINT fk_follow_follower_id FOREIGN KEY (follower_id) REFERENCES users (user_id) ON DELETE CASCADE,
-    CONSTRAINT fk_follow_followee_id FOREIGN KEY (followee_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS series
@@ -71,31 +57,15 @@ CREATE TABLE IF NOT EXISTS post_drafts
 (
     post_draft_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id       BIGINT       NOT NULL,
+    series_id     BIGINT,
     title         VARCHAR(255) NOT NULL,
     content       TEXT         NOT NULL,
+    thumbnail_url VARCHAR(255),
+    is_public     BOOLEAN      NOT NULL DEFAULT TRUE,
     created_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_post_draft_user_id FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS tags
-(
-    tag_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name       VARCHAR(50) NOT NULL UNIQUE,
-    created_at DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS post_tags
-(
-    post_tag_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    post_id     BIGINT   NOT NULL,
-    tag_id      BIGINT   NOT NULL,
-    created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT post_tags_post_tag_unique UNIQUE (post_id, tag_id),
-    CONSTRAINT fk_post_tag_post_id FOREIGN KEY (post_id) REFERENCES posts (post_id) ON DELETE CASCADE,
-    CONSTRAINT fk_post_tag_tag_id FOREIGN KEY (tag_id) REFERENCES tags (tag_id) ON DELETE CASCADE
+    CONSTRAINT fk_post_draft_user_id FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_post_draft_series_id FOREIGN KEY (series_id) REFERENCES series (series_id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS post_likes
@@ -133,7 +103,6 @@ CREATE TABLE IF NOT EXISTS post_statistics
     CONSTRAINT fk_post_statistics_post_id FOREIGN KEY (post_id) REFERENCES posts (post_id) ON DELETE CASCADE
 );
 
-
 CREATE TABLE IF NOT EXISTS comments
 (
     comment_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -144,29 +113,6 @@ CREATE TABLE IF NOT EXISTS comments
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_comment_post_id FOREIGN KEY (post_id) REFERENCES posts (post_id) ON DELETE CASCADE,
     CONSTRAINT fk_comment_user_id FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS comment_replies
-(
-    comment_reply_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    comment_id       BIGINT   NOT NULL,
-    user_id          BIGINT   NOT NULL,
-    content          TEXT     NOT NULL,
-    created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_comment_reply_comment_id FOREIGN KEY (comment_id) REFERENCES comments (comment_id) ON DELETE CASCADE,
-    CONSTRAINT fk_comment_reply_user_id FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS notifications
-(
-    notification_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id         BIGINT                              NOT NULL,
-    type            ENUM('COMMENT', 'LIKE', 'FOLLOW')   NOT NULL,
-    content         VARCHAR(255)                        NOT NULL,
-    is_read         BOOLEAN                                      DEFAULT FALSE,
-    created_at      DATETIME                            NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at      DATETIME                            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Spring Batch (MySQL용)

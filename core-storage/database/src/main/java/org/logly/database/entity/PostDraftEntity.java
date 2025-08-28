@@ -2,9 +2,13 @@ package org.logly.database.entity;
 
 import jakarta.persistence.*;
 
-import lombok.Getter;
+import lombok.*;
 
+@Setter
+@Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "post_drafts")
 public class PostDraftEntity extends BaseEntity {
@@ -12,10 +16,18 @@ public class PostDraftEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postDraftId;
 
-    private Long userId;
     private String title;
     private String content;
+    private String thumbnailUrl;
 
-    // For JPA
-    protected PostDraftEntity() {}
+    @Column(name = "is_public")
+    private Boolean isPublic = true;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "series_id")
+    private SeriesEntity series;
 }
