@@ -32,7 +32,7 @@ public class SeriesController {
                 .toList());
     }
 
-    @GetMapping("/v1/series/{seriesId}")
+    @GetMapping("/v1/series/detail/{seriesId}")
     public ApiResponse<SeriesItemResponse> getSeries(@PathVariable("seriesId") Long seriesId) {
         SeriesEntity series = seriesService.getSeriesById(seriesId);
         return ApiResponse.success(SeriesItemResponse.fromEntity(series));
