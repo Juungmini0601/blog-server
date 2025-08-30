@@ -32,6 +32,12 @@ public class SeriesController {
                 .toList());
     }
 
+    @GetMapping("/v1/series/{seriesId}")
+    public ApiResponse<SeriesItemResponse> getSeries(@PathVariable("seriesId") Long seriesId) {
+        SeriesEntity series = seriesService.getSeriesById(seriesId);
+        return ApiResponse.success(SeriesItemResponse.fromEntity(series));
+    }
+
     @PostMapping("/v1/series")
     public ApiResponse<CreateSeriesResponse> create(
             Authentication authentication, @Valid @RequestBody CreateSeriesRequest request) {

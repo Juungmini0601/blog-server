@@ -26,6 +26,11 @@ public class SeriesService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
+    public SeriesEntity getSeriesById(Long seriesId) {
+        return seriesRepository.findByIdOrElseThrow(seriesId);
+    }
+
+    @Transactional(readOnly = true)
     public List<SeriesEntity> getSeriesItemsByUserId(Long userId) {
         UserEntity user = userRepository.findByIdOrElseThrow(userId);
         return seriesRepository.findAllByUser(user);
