@@ -1,5 +1,7 @@
 package org.logly.redis.config;
 
+import java.util.TimeZone;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +21,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
-@EnableRedisHttpSession(redisNamespace = "my-blog", maxInactiveIntervalInSeconds = 1800, flushMode = FlushMode.IMMEDIATE)
+@EnableRedisHttpSession(
+        redisNamespace = "my-blog",
+        maxInactiveIntervalInSeconds = 1800,
+        flushMode = FlushMode.IMMEDIATE)
 public class RedisConfig {
     private final String host;
 
@@ -42,6 +47,8 @@ public class RedisConfig {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+
+        objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         return objectMapper;
     }
 
