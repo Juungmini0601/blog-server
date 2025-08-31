@@ -80,8 +80,7 @@ public class SecurityConfig {
                                         "/actuator/**",
                                         "/v1/posts/**",
                                         "/v1/comments/**",
-                                        "/v1/followees/**",
-                                        "/v1/followers/**")
+                                        "/v1/series/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
