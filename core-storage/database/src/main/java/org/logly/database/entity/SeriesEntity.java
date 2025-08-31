@@ -1,5 +1,7 @@
 package org.logly.database.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -30,5 +32,17 @@ public class SeriesEntity extends BaseEntity {
         if (this.postCount == null) {
             this.postCount = 0L;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        SeriesEntity that = (SeriesEntity) o;
+        return Objects.equals(seriesId, that.seriesId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(seriesId);
     }
 }
